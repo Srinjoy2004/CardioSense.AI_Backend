@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CardioSense.AI - Heart Disease Prediction</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+   
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                <span>CardioSense.AI</span>
+            </div>
+            <div class="nav-links">
+                <a href="#home" class="active">Home</a>
+                <a href="#features">Features</a>
+                <a href="#prediction">Prediction</a>
+                <a href="#chatbot">AI Assistant</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero" id="home">
+        <div class="hero-bg"></div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>AI-Powered <span>Heart Disease</span> Prediction System</h1>
+                    <p>CardioSense.AI uses advanced machine learning algorithms to predict your risk of heart disease based on key health indicators. Get personalized insights, recommendations, and take control of your heart health today.</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-calculator"></i>
+                            Start Prediction
+                        </button>
+                        <button class="btn btn-outline">
+                            <i class="fas fa-info-circle"></i>
+                            Learn More
+                        </button>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="istockphoto-1126458889-612x612-removebg-preview.png" alt="Heart Health Visualization">
+                    <div class="pulse-circle"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES SECTION -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our Features</h2>
+                <p>CardioSense.AI offers a comprehensive set of features to help you understand and manage your heart health effectively.</p>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3>AI-Powered Prediction</h3>
+                    <p>Our advanced XGBoost machine learning model analyzes your health parameters to predict heart disease risk with high accuracy.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI Health Assistant</h3>
+                    <p>Get personalized guidance and answers to your health questions from our intelligent AI chatbot.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <h3>PDF Reports</h3>
+                    <p>Download comprehensive PDF reports of your heart health analysis to share with your healthcare provider.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Risk Assessment</h3>
+                    <p>Receive a detailed risk score and visualization of your heart disease probability based on personal health data.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-apple-alt"></i>
+                    </div>
+                    <h3>Lifestyle Recommendations</h3>
+                    <p>Get personalized diet, exercise, and habit modification suggestions to improve your heart health.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PREDICTION SECTION -->
+    <section class="prediction" id="prediction">
+        <div class="container">
+            <div class="section-header">
+                <h2>Heart Disease Prediction</h2>
+                <p>Enter your health parameters below to get an instant prediction of your heart disease risk.</p>
+            </div>
+            <div class="prediction-container">
+                <div class="prediction-form">
+                    <div class="form-header">
+                        <h3>Your Health Information</h3>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="age">Age</label>
+                            <input type="number" id="age" class="form-control" placeholder="Enter your age">
+                        </div>
+                        <div class="form-group">
+                            <label for="sex">Sex</label>
+                            <select id="sex" class="form-control">
+                                <option value="">Select</option>
+                                <option value="1">Male</option>
+                                <option value="0">Female</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bmi">BMI (Body Mass Index)</label>
+                        <input type="number" step="0.1" id="bmi" class="form-control" placeholder="Enter your BMI">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="smoking">Do you smoke?</label>
+                            <select id="smoking" class="form-control">
+                                <option value="">Select</option>
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="alcohol">Do you drink alcohol?</label>
+                            <select id="alcohol" class="form-control">
+                                <option value="">Select</option>
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="stroke">Have you had a stroke?</label>
+                            <select id="stroke" class="form-control">
+                                <option value="">Select</option>
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="diabetic">Are you diabetic?</label>
+                            <select id="diabetic" class="form-control">
+                                <option value="">Select</option>
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="physical">Physical activity in past 30 days?</label>
+                            <select id="physical" class="form-control">
+                                <option value="">Select</option>
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="sleep">Average sleep time (hours)</label>
+                            <input type="number" id="sleep" class="form-control" placeholder="Hours per day">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="genhealth">General Health</label>
+                        <select id="genhealth" class="form-control">
+                            <option value="">Select</option>
+                            <option value="5">Excellent</option>
+                            <option value="4">Very Good</option>
+                            <option value="3">Good</option>
+                            <option value="2">Fair</option>
+                            <option value="1">Poor</option>
+                        </select>
+                    </div>
+                    <div class="prediction-submit">
+                        <button class="btn btn-primary" id="predict-btn">
+                            <i class="fas fa-heart"></i>
+                            Predict Heart Disease Risk
+                        </button>
+                    </div>
+                </div>
+                <div class="prediction-results">
+                    <div class="result-card" id="result-card">
+                        <h3>Your Heart Disease Risk Result</h3>
+                        <div class="prediction-chart">
+                            <div class="risk-meter">
+                                <div class="risk-circle">
+                                    <div class="risk-inner">
+                                        <span class="risk-percentage" id="risk-percentage">0%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="risk-details">
+                                <div class="risk-level" id="risk-level">Low Risk</div>
+                                <p class="risk-message" id="risk-message">Please fill out the form to get your heart disease risk prediction.</p>
+                                <div class="download-report">
+                                    <button class="btn btn-outline" id="download-btn" disabled>
+                                        <i class="fas fa-file-download"></i>
+                                        Download PDF Report
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CHATBOT SECTION -->
+    <section class="chatbot" id="chatbot">
+        <div class="container">
+            <div class="section-header">
+                <h2>AI Health Assistant</h2>
+                <p>Get personalized health advice and answers to your questions from our intelligent AI chatbot.</p>
+            </div>
+            <div class="chatbot-container">
+                <div class="chatbot-wrapper">
+                    <div class="chatbot-header">
+                        <div class="bot-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="bot-info">
+                            <h3>CardioBot</h3>
+                            <small>AI Health Assistant</small>
+                        </div>
+                    </div>
+                    <div class="chatbot-messages" id="chat-messages">
+                        <div class="message bot">
+                            Hello! I'm CardioBot, your AI health assistant. How can I help you with your heart health questions today?
+                            <div class="message-time">Just now</div>
+                        </div>
+                    </div>
+                    <div class="chatbot-suggestions">
+                        <div class="suggestion-chip">What is heart disease?</div>
+                        <div class="suggestion-chip">How can I lower my risk?</div>
+                        <div class="suggestion-chip">Explain my results</div>
+                        <div class="suggestion-chip">Heart healthy diet tips</div>
+                    </div>
+                    <div class="chatbot-input">
+                        <input type="text" placeholder="Type your message here..." id="chat-input">
+                        <button id="send-btn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="chatbot-info">
+                    <div class="info-card">
+                        <h3>How CardioBot Helps You</h3>
+                        <ul class="info-list">
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <div>Get answers to health questions 24/7</div>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <div>Receive personalized lifestyle recommendations</div>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <div>Learn about heart disease risk factors</div>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <div>Understand your prediction results</div>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <div>Track your progress with helpful reminders</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS SECTION -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2>User Testimonials</h2>
+                <p>See what our users are saying about CardioSense.AI</p>
+            </div>
+            <div class="testimonial-slider">
+                <div class="testimonial-track" id="testimonial-track">
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p>CardioSense.AI helped me identify my heart disease risk early. Following the recommendations has improved my health metrics significantly in just three months.</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">JD</div>
+                            <div class="author-info">
+                                <h4>John Davis</h4>
+                                <small>Software Engineer, 42</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p>The AI chatbot is incredibly helpful. It answered all my questions and helped me understand what lifestyle changes I needed to make to improve my heart health.</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">SM</div>
+                            <div class="author-info">
+                                <h4>Sarah Miller</h4>
+                                <small>Teacher, 38</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p>I've been using the PDF reports to share with my doctor. It has made our consultations much more productive as we can focus on specific risk factors.</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">RJ</div>
+                            <div class="author-info">
+                                <h4>Robert Johnson</h4>
+                                <small>Retired, 65</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-controls">
+                    <div class="testimonial-dot active"></div>
+                    <div class="testimonial-dot"></div>
+                    <div class="testimonial-dot"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer" id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <div class="footer-logo">
+                        <div class="logo">
+                            <i class="fas fa-heartbeat"></i>
+                            <span>CardioSense.AI</span>
+                        </div>
+                    </div>
+                    <p>CardioSense.AI is an AI-powered heart disease prediction system that helps users assess their risk and take proactive measures toward better heart health.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#prediction">Prediction</a></li>
+                        <li><a href="#chatbot">AI Assistant</a></li>
+                        <li><a href="#contact">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="#">About Heart Disease</a></li>
+                        <li><a href="#">Health Tips</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>Stay Updated</h3>
+                    <p>Subscribe to our newsletter to receive the latest updates on heart health and our AI technology.</p>
+                    <div class="newsletter-form">
+                        <input type="email" placeholder="Your email address">
+                        <button>Subscribe</button>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CardioSense.AI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="index.js"></script>
+
+</body>
+</html>
