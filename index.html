@@ -117,6 +117,17 @@
                             <label for="age">Age</label>
                             <input type="number" id="age" class="form-control" placeholder="Enter your age">
                         </div>
+
+                        <div class="form-group">
+                            <label for="height">Height (in cm)</label>
+                            <input type="number" id="height" class="form-control" placeholder="Enter your height">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="weight">weight (in Kg)</label>
+                            <input type="number" id="weight" class="form-control" placeholder="Enter your weight">
+                        </div>
+
                         <div class="form-group">
                             <label for="sex">Sex</label>
                             <select id="sex" class="form-control">
@@ -127,9 +138,25 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="bmi">BMI (Body Mass Index)</label>
-                        <input type="number" step="0.1" id="bmi" class="form-control" placeholder="Enter your BMI">
+                        <label for="ap_hi">Systolic Blood Pressure (ap_hi)</label>
+                        <input type="number" step="0.1" id="ap_hi" class="form-control" placeholder="Enter your Systolic Blood Pressure (ap_hi)">
                     </div>
+
+                    <div class="form-group">
+                        <label for="ap_lo">Diastolic Blood Pressure (ap_lo)</label>
+                        <input type="number" step="0.1" id="ap_lo" class="form-control" placeholder="Enter your Diastolic Blood Pressure (ap_lo)">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ch">Cholesterol</label>
+                        <input type="number" step="0.1" id="ch" class="form-control" placeholder="Enter your Cholesterol (1: Normal, 2: Above Normal, 3: Well Above Normal)">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gl">Glucose</label>
+                        <input type="number" step="0.1" id="gl" class="form-control" placeholder="Enter your Glucose (1: Normal, 2: Above Normal, 3: Well Above Normal)">
+                    </div>
+
                     <div class="form-row">
                         <div class="form-group">
                             <label for="smoking">Do you smoke?</label>
@@ -148,24 +175,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="stroke">Have you had a stroke?</label>
-                            <select id="stroke" class="form-control">
-                                <option value="">Select</option>
-                                <option value="1">Yes</option>
-                                <option value="0">No</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="diabetic">Are you diabetic?</label>
-                            <select id="diabetic" class="form-control">
-                                <option value="">Select</option>
-                                <option value="1">Yes</option>
-                                <option value="0">No</option>
-                            </select>
-                        </div>
-                    </div>
+                
                     <div class="form-row">
                         <div class="form-group">
                             <label for="physical">Physical activity in past 30 days?</label>
@@ -175,22 +185,9 @@
                                 <option value="0">No</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="sleep">Average sleep time (hours)</label>
-                            <input type="number" id="sleep" class="form-control" placeholder="Hours per day">
-                        </div>
+                       
                     </div>
-                    <div class="form-group">
-                        <label for="genhealth">General Health</label>
-                        <select id="genhealth" class="form-control">
-                            <option value="">Select</option>
-                            <option value="5">Excellent</option>
-                            <option value="4">Very Good</option>
-                            <option value="3">Good</option>
-                            <option value="2">Fair</option>
-                            <option value="1">Poor</option>
-                        </select>
-                    </div>
+               
                     <div class="prediction-submit">
                         <button class="btn btn-primary" id="predict-btn">
                             <i class="fas fa-heart"></i>
