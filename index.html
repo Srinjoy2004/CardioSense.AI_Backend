@@ -1,406 +1,1679 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CardioSense.AI - Heart Disease Prediction</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-   
-</head>
-<body>
+
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #1db954;
+        --primary-dark: #0e5e2b;
+        --secondary: #063f1c;
+        --dark: #121212;
+        --darker: #0a0a0a;
+        --light-text: #e6e6e6;
+        --accent: #2ecc71;
+        --danger: #e74c3c;
+        --warning: #f39c12;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: var(--dark);
+        color: var(--light-text);
+        transition: all 0.3s ease;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* NAVBAR */
+      .navbar {
+        background-color: var(--darker);
+        padding: 15px 0;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .navbar-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: bold;
+        font-size: 24px;
+        color: var(--primary);
+      }
+
+      .logo i {
+        color: var(--primary);
+      }
+
+      .logo span {
+        background: linear-gradient(
+          90deg,
+          var(--primary) 0%,
+          var(--accent) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 25px;
+      }
+
+      .nav-links a {
+        color: var(--light-text);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+
+      .nav-links a:hover {
+        color: var(--primary);
+      }
+
+      .nav-links .active {
+        color: var(--primary);
+        border-bottom: 2px solid var(--primary);
+      }
+
+      /* HERO SECTION */
+      .hero {
+        padding-top: 100px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.05;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M50 0 L100 50 L50 100 L0 50 Z" fill="%231db954"/></svg>');
+        background-size: 100px 100px;
+        z-index: -1;
+      }
+
+      .hero-content {
+        display: flex;
+        align-items: center;
+        gap: 40px;
+        margin-bottom: 50px;
+      }
+
+      .hero-text {
+        flex: 1;
+      }
+
+      .hero-text h1 {
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        line-height: 1.2;
+      }
+
+      .hero-text h1 span {
+        color: var(--primary);
+      }
+
+      .hero-text p {
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+        color: #b3b3b3;
+        line-height: 1.6;
+      }
+
+      .hero-buttons {
+        display: flex;
+        gap: 15px;
+      }
+
+      .btn {
+        padding: 12px 25px;
+        border-radius: 50px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-primary {
+        background-color: var(--primary);
+        color: black;
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(29, 185, 84, 0.2);
+      }
+
+      .btn-outline {
+        background-color: transparent;
+        color: var(--light-text);
+        border: 2px solid var(--primary);
+      }
+
+      .btn-outline:hover {
+        background-color: var(--primary);
+        color: black;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(29, 185, 84, 0.2);
+      }
+
+      .hero-image {
+        flex: 1;
+        text-align: center;
+        position: relative;
+      }
+
+      .hero-image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        transform: perspective(1000px) rotateY(-10deg);
+        transition: all 0.5s;
+      }
+
+      .hero-image:hover img {
+        transform: perspective(1000px) rotateY(0);
+      }
+
+      .pulse-circle {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        border: 2px solid var(--primary);
+        opacity: 0;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: translate(-50%, -50%) scale(0.8);
+          opacity: 0.8;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1.5);
+          opacity: 0;
+        }
+      }
+
+      /* FEATURES SECTION */
+      .features {
+        padding: 100px 0;
+        background-color: var(--darker);
+      }
+
+      .section-header {
+        text-align: center;
+        margin-bottom: 60px;
+      }
+
+      .section-header h2 {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        position: relative;
+        display: inline-block;
+      }
+
+      .section-header h2:after {
+        content: "";
+        position: absolute;
+        width: 60%;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          var(--primary) 0%,
+          var(--accent) 100%
+        );
+        bottom: -10px;
+        left: 20%;
+      }
+
+      .section-header p {
+        color: #b3b3b3;
+        font-size: 1.1rem;
+        max-width: 700px;
+        margin: 0 auto;
+        line-height: 1.6;
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+      }
+
+      .feature-card {
+        background-color: var(--dark);
+        padding: 30px;
+        border-radius: 10px;
+        transition: all 0.3s;
+        border: 1px solid #2a2a2a;
+        height: 100%;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(29, 185, 84, 0.1);
+        border-color: var(--primary);
+      }
+
+      .feature-icon {
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin-bottom: 20px;
+      }
+
+      .feature-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+      }
+
+      .feature-card p {
+        color: #b3b3b3;
+        line-height: 1.6;
+      }
+
+      /* PREDICTION SECTION */
+      .prediction {
+        padding: 100px 0;
+        background-color: var(--dark);
+      }
+
+      .prediction-container {
+        display: flex;
+        gap: 40px;
+      }
+
+      .prediction-form {
+        flex: 1;
+        background-color: var(--darker);
+        padding: 30px;
+        border-radius: 10px;
+        border: 1px solid #2a2a2a;
+      }
+
+      .prediction-results {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+      }
+
+      .result-card {
+        background-color: var(--darker);
+        padding: 30px;
+        border-radius: 10px;
+        border: 1px solid #2a2a2a;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        opacity: 0.6;
+        transition: all 0.3s;
+      }
+
+      .result-card.active {
+        opacity: 1;
+        border-color: var(--primary);
+        animation: fadeIn 0.5s;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .form-header {
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border-radius: 5px;
+        border: 1px solid #2a2a2a;
+        background-color: var(--dark);
+        color: var(--light-text);
+        transition: all 0.3s;
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 2px rgba(29, 185, 84, 0.2);
+      }
+
+      .form-row {
+        display: flex;
+        gap: 15px;
+      }
+
+      .form-row .form-group {
+        flex: 1;
+      }
+
+      .prediction-submit {
+        text-align: center;
+        margin-top: 30px;
+      }
+
+      .prediction-chart {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .risk-meter {
+        width: 200px;
+        height: 200px;
+        position: relative;
+        margin-bottom: 20px;
+      }
+
+      .risk-circle {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: linear-gradient(
+          90deg,
+          var(--primary) 0%,
+          var(--warning) 50%,
+          var(--danger) 100%
+        );
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .risk-inner {
+        width: 80%;
+        height: 80%;
+        border-radius: 50%;
+        background-color: var(--darker);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: bold;
+      }
+
+      .risk-percentage {
+        position: relative;
+        z-index: 2;
+      }
+
+      .risk-details {
+        text-align: center;
+      }
+
+      .risk-level {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .risk-message {
+        color: #b3b3b3;
+        margin-bottom: 20px;
+      }
+
+      .download-report {
+        margin-top: 20px;
+      }
+
+      /* CHATBOT SECTION */
+      .chatbot {
+        padding: 100px 0;
+        background-color: var(--darker);
+      }
+
+      .chatbot-container {
+        display: flex;
+        gap: 40px;
+        position: relative;
+      }
+
+      .chatbot-wrapper {
+        flex: 1;
+        background-color: var(--dark);
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #2a2a2a;
+        height: 500px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+
+      .chatbot-header {
+        background-color: var(--secondary);
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-bottom: 1px solid #2a2a2a;
+      }
+
+      .chatbot-header .bot-avatar {
+        width: 40px;
+        height: 40px;
+        background-color: var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .chatbot-header .bot-info h3 {
+        font-size: 1.2rem;
+        margin-bottom: 3px;
+      }
+
+      .chatbot-header .bot-info small {
+        color: #b3b3b3;
+      }
+
+      .chatbot-messages {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .message {
+        max-width: 80%;
+        padding: 12px 15px;
+        border-radius: 10px;
+        line-height: 1.4;
+        position: relative;
+        animation: messageIn 0.3s;
+      }
+
+      @keyframes messageIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .message.bot {
+        background-color: var(--secondary);
+        align-self: flex-start;
+        border-top-left-radius: 2px;
+      }
+
+      .message.user {
+        background-color: var(--primary-dark);
+        align-self: flex-end;
+        border-top-right-radius: 2px;
+      }
+
+      .message-time {
+        font-size: 0.7rem;
+        opacity: 0.7;
+        margin-top: 5px;
+        text-align: right;
+      }
+
+      .chatbot-input {
+        padding: 15px;
+        border-top: 1px solid #2a2a2a;
+        display: flex;
+        gap: 10px;
+      }
+
+      .chatbot-input input {
+        flex: 1;
+        padding: 12px 15px;
+        border-radius: 50px;
+        border: 1px solid #2a2a2a;
+        background-color: var(--dark);
+        color: var(--light-text);
+      }
+
+      .chatbot-input input:focus {
+        outline: none;
+        border-color: var(--primary);
+      }
+
+      .chatbot-input button {
+        background-color: var(--primary);
+        color: black;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .chatbot-input button:hover {
+        background-color: var(--primary-dark);
+        transform: scale(1.05);
+      }
+
+      .chatbot-suggestions {
+        padding: 15px;
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        border-top: 1px solid #2a2a2a;
+      }
+
+      .suggestion-chip {
+        padding: 8px 15px;
+        background-color: var(--dark);
+        border: 1px solid var(--primary);
+        border-radius: 50px;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .suggestion-chip:hover {
+        background-color: var(--primary);
+        color: black;
+      }
+
+      .chatbot-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .info-card {
+        background-color: var(--dark);
+        padding: 25px;
+        border-radius: 10px;
+        border: 1px solid #2a2a2a;
+        height: 100%;
+      }
+
+      .info-card h3 {
+        margin-bottom: 15px;
+        color: var(--primary);
+      }
+
+      .info-list {
+        list-style-type: none;
+      }
+
+      .info-list li {
+        margin-bottom: 10px;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .info-list li i {
+        color: var(--primary);
+        margin-top: 4px;
+      }
+
+      /* TESTIMONIALS SECTION */
+      .testimonials {
+        padding: 100px 0;
+        background-color: var(--dark);
+      }
+
+      .testimonial-slider {
+        position: relative;
+        overflow: hidden;
+        padding: 20px 0;
+      }
+
+      .testimonial-track {
+        display: flex;
+        gap: 30px;
+        transition: transform 0.5s ease;
+      }
+
+      .testimonial-card {
+        flex: 0 0 calc(33.333% - 20px);
+        background-color: var(--darker);
+        padding: 30px;
+        border-radius: 10px;
+        border: 1px solid #2a2a2a;
+        min-width: 300px;
+      }
+
+      .testimonial-content {
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      .testimonial-content::before {
+        content: '"';
+        font-size: 4rem;
+        position: absolute;
+        color: var(--primary);
+        opacity: 0.2;
+        top: -20px;
+        left: -10px;
+      }
+
+      .testimonial-author {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .author-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        overflow: hidden;
+        background-color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: black;
+        font-weight: bold;
+      }
+
+      .author-info h4 {
+        margin-bottom: 5px;
+      }
+
+      .author-info small {
+        color: #b3b3b3;
+      }
+
+      .testimonial-controls {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 30px;
+      }
+
+      .testimonial-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #2a2a2a;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .testimonial-dot.active {
+        background-color: var(--primary);
+        transform: scale(1.3);
+      }
+
+      /* FOOTER */
+      .footer {
+        background-color: var(--darker);
+        padding: 80px 0 30px;
+        position: relative;
+      }
+
+      .footer-content {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 40px;
+        margin-bottom: 50px;
+      }
+
+      .footer-logo {
+        margin-bottom: 20px;
+      }
+
+      .footer-about {
+        flex: 2;
+        max-width: 400px;
+      }
+
+      .footer-about p {
+        color: #b3b3b3;
+        margin-bottom: 20px;
+        line-height: 1.6;
+      }
+
+      .social-links {
+        display: flex;
+        gap: 15px;
+      }
+
+      .social-link {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--secondary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--light-text);
+        transition: all 0.3s;
+      }
+
+      .social-link:hover {
+        background-color: var(--primary);
+        color: black;
+        transform: translateY(-5px);
+      }
+
+      .footer-links {
+        flex: 1;
+      }
+
+      .footer-links h3 {
+        margin-bottom: 20px;
+        color: var(--primary);
+      }
+
+      .footer-links ul {
+        list-style-type: none;
+      }
+
+      .footer-links ul li {
+        margin-bottom: 10px;
+      }
+
+      .footer-links ul li a {
+        color: #b3b3b3;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .footer-links ul li a:hover {
+        color: var(--primary);
+      }
+
+      .footer-newsletter {
+        flex: 2;
+        max-width: 400px;
+      }
+
+      .footer-newsletter h3 {
+        margin-bottom: 20px;
+        color: var(--primary);
+      }
+
+      .footer-newsletter p {
+        color: #b3b3b3;
+        margin-bottom: 20px;
+        line-height: 1.6;
+      }
+
+      .newsletter-form {
+        display: flex;
+        gap: 10px;
+      }
+
+      .newsletter-form input {
+        flex: 1;
+        padding: 12px 15px;
+        border-radius: 5px;
+        border: 1px solid #2a2a2a;
+        background-color: var(--dark);
+        color: var(--light-text);
+      }
+
+      .newsletter-form input:focus {
+        outline: none;
+        border-color: var(--primary);
+      }
+
+      .newsletter-form button {
+        padding: 12px 15px;
+        background-color: var(--primary);
+        color: black;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .newsletter-form button:hover {
+        background-color: var(--primary-dark);
+      }
+
+      .footer-bottom {
+        padding-top: 30px;
+        border-top: 1px solid #2a2a2a;
+        text-align: center;
+        color: #b3b3b3;
+      }
+
+      /* RESPONSIVE DESIGN */
+      @media (max-width: 1024px) {
+        .hero-content {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .hero-buttons {
+          justify-content: center;
+        }
+
+        .prediction-container {
+          flex-direction: column;
+        }
+
+        .chatbot-container {
+          flex-direction: column;
+        }
+
+        .testimonial-card {
+          flex: 0 0 calc(50% - 20px);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .navbar-content {
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        .nav-links {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .feature-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .form-row {
+          flex-direction: column;
+        }
+
+        .footer-content {
+          flex-direction: column;
+          gap: 30px;
+        }
+
+        .testimonial-card {
+          flex: 0 0 100%;
+        }
+      }
+
+      /* ANIMATIONS */
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .float {
+        animation: float 5s ease-in-out infinite;
+      }
+
+      /* LOADER */
+      .loader {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100px;
+      }
+
+      .loader-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: var(--primary);
+        margin: 0 5px;
+        animation: loader 1.5s infinite ease-in-out;
+      }
+
+      .loader-dot:nth-child(1) {
+        animation-delay: 0s;
+      }
+
+      .loader-dot:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .loader-dot:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes loader {
+        0%,
+        100% {
+          transform: scale(0.5);
+          opacity: 0.3;
+        }
+        50% {
+          transform: scale(1.2);
+          opacity: 1;
+        }
+      }
+
+      /* TOOLTIP */
+      .tooltip {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+      }
+
+      .tooltip .tooltip-text {
+        visibility: hidden;
+        width: 200px;
+        background-color: var(--darker);
+        color: var(--light-text);
+        text-align: center;
+        border-radius: 6px;
+        padding: 10px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.3s;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        border: 1px solid #2a2a2a;
+      }
+
+      .tooltip:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      /* SCROLLBAR */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: var(--dark);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--secondary);
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--primary);
+      }
+    </style>
+  </head>
+  <body>
     <!-- NAVBAR -->
     <nav class="navbar">
-        <div class="container navbar-content">
-            <div class="logo">
-                <i class="fas fa-heartbeat"></i>
-                <span>CardioSense.AI</span>
-            </div>
-            <div class="nav-links">
-                <a href="#home" class="active">Home</a>
-                <a href="#features">Features</a>
-                <a href="#prediction">Prediction</a>
-                <a href="#chatbot">AI Assistant</a>
-                <a href="#contact">Contact</a>
-            </div>
+      <div class="container navbar-content">
+        <div class="logo">
+          <i class="fas fa-heartbeat"></i>
+          <span>CardioSense.AI</span>
         </div>
+        <div class="nav-links">
+          <a href="#home" class="active">Home</a>
+          <a href="#features">Features</a>
+          <a href="#prediction">Prediction</a>
+          <a href="#chatbot">AI Assistant</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
     </nav>
 
     <!-- HERO SECTION -->
     <section class="hero" id="home">
-        <div class="hero-bg"></div>
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-text">
-                    <h1>AI-Powered <span>Heart Disease</span> Prediction System</h1>
-                    <p>CardioSense.AI uses advanced machine learning algorithms to predict your risk of heart disease based on key health indicators. Get personalized insights, recommendations, and take control of your heart health today.</p>
-                    <div class="hero-buttons">
-                        <button class="btn btn-primary">
-                            <i class="fas fa-calculator"></i>
-                            Start Prediction
-                        </button>
-                        <button class="btn btn-outline">
-                            <i class="fas fa-info-circle"></i>
-                            Learn More
-                        </button>
-                    </div>
-                </div>
-                <div class="hero-image">
-                    <img src="istockphoto-1126458889-612x612-removebg-preview.png" alt="Heart Health Visualization">
-                    <div class="pulse-circle"></div>
-                </div>
+      <div class="hero-bg"></div>
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1>AI-Powered <span>Heart Disease</span> Prediction System</h1>
+            <p>
+              CardioSense.AI uses advanced machine learning algorithms to
+              predict your risk of heart disease based on key health indicators.
+              Get personalized insights, recommendations, and take control of
+              your heart health today.
+            </p>
+            <div class="hero-buttons">
+              <button class="btn btn-primary">
+                <i class="fas fa-calculator"></i>
+                Start Prediction
+              </button>
+              <button class="btn btn-outline">
+                <i class="fas fa-info-circle"></i>
+                Learn More
+              </button>
             </div>
+          </div>
+          <div class="hero-image">
+            <img
+              src="istockphoto-1126458889-612x612-removebg-preview.png"
+              alt="Heart Health Visualization"
+            />
+            <div class="pulse-circle"></div>
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- FEATURES SECTION -->
     <section class="features" id="features">
-        <div class="container">
-            <div class="section-header">
-                <h2>Our Features</h2>
-                <p>CardioSense.AI offers a comprehensive set of features to help you understand and manage your heart health effectively.</p>
-            </div>
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-heartbeat"></i>
-                    </div>
-                    <h3>AI-Powered Prediction</h3>
-                    <p>Our advanced XGBoost machine learning model analyzes your health parameters to predict heart disease risk with high accuracy.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <h3>AI Health Assistant</h3>
-                    <p>Get personalized guidance and answers to your health questions from our intelligent AI chatbot.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-file-pdf"></i>
-                    </div>
-                    <h3>PDF Reports</h3>
-                    <p>Download comprehensive PDF reports of your heart health analysis to share with your healthcare provider.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3>Risk Assessment</h3>
-                    <p>Receive a detailed risk score and visualization of your heart disease probability based on personal health data.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-apple-alt"></i>
-                    </div>
-                    <h3>Lifestyle Recommendations</h3>
-                    <p>Get personalized diet, exercise, and habit modification suggestions to improve your heart health.</p>
-                </div>
-            </div>
+      <div class="container">
+        <div class="section-header">
+          <h2>Our Features</h2>
+          <p>
+            CardioSense.AI offers a comprehensive set of features to help you
+            understand and manage your heart health effectively.
+          </p>
         </div>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-heartbeat"></i>
+            </div>
+            <h3>AI-Powered Prediction</h3>
+            <p>
+              Our advanced XGBoost machine learning model analyzes your health
+              parameters to predict heart disease risk with high accuracy.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-robot"></i>
+            </div>
+            <h3>AI Health Assistant</h3>
+            <p>
+              Get personalized guidance and answers to your health questions
+              from our intelligent AI chatbot.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-file-pdf"></i>
+            </div>
+            <h3>PDF Reports</h3>
+            <p>
+              Download comprehensive PDF reports of your heart health analysis
+              to share with your healthcare provider.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>Risk Assessment</h3>
+            <p>
+              Receive a detailed risk score and visualization of your heart
+              disease probability based on personal health data.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-apple-alt"></i>
+            </div>
+            <h3>Lifestyle Recommendations</h3>
+            <p>
+              Get personalized diet, exercise, and habit modification
+              suggestions to improve your heart health.
+            </p>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- PREDICTION SECTION -->
     <section class="prediction" id="prediction">
-        <div class="container">
-            <div class="section-header">
-                <h2>Heart Disease Prediction</h2>
-                <p>Enter your health parameters below to get an instant prediction of your heart disease risk.</p>
-            </div>
-            <div class="prediction-container">
-                <div class="prediction-form">
-                    <div class="form-header">
-                        <h3>Your Health Information</h3>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="age">Age</label>
-                            <input type="number" id="age" class="form-control" placeholder="Enter your age">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="height">Height (in cm)</label>
-                            <input type="number" id="height" class="form-control" placeholder="Enter your height">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="weight">weight (in Kg)</label>
-                            <input type="number" id="weight" class="form-control" placeholder="Enter your weight">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="sex">Sex</label>
-                            <select id="sex" class="form-control">
-                                <option value="">Select</option>
-                                <option value="1">Male</option>
-                                <option value="0">Female</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="ap_hi">Systolic Blood Pressure (ap_hi)</label>
-                        <input type="number" step="0.1" id="ap_hi" class="form-control" placeholder="Enter your Systolic Blood Pressure (ap_hi)">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="ap_lo">Diastolic Blood Pressure (ap_lo)</label>
-                        <input type="number" step="0.1" id="ap_lo" class="form-control" placeholder="Enter your Diastolic Blood Pressure (ap_lo)">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="ch">Cholesterol</label>
-                        <input type="number" step="0.1" id="ch" class="form-control" placeholder="Enter your Cholesterol (1: Normal, 2: Above Normal, 3: Well Above Normal)">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="gl">Glucose</label>
-                        <input type="number" step="0.1" id="gl" class="form-control" placeholder="Enter your Glucose (1: Normal, 2: Above Normal, 3: Well Above Normal)">
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="smoking">Do you smoke?</label>
-                            <select id="smoking" class="form-control">
-                                <option value="">Select</option>
-                                <option value="1">Yes</option>
-                                <option value="0">No</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="alcohol">Do you drink alcohol?</label>
-                            <select id="alcohol" class="form-control">
-                                <option value="">Select</option>
-                                <option value="1">Yes</option>
-                                <option value="0">No</option>
-                            </select>
-                        </div>
-                    </div>
-                
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="physical">Physical activity in past 30 days?</label>
-                            <select id="physical" class="form-control">
-                                <option value="">Select</option>
-                                <option value="1">Yes</option>
-                                <option value="0">No</option>
-                            </select>
-                        </div>
-                       
-                    </div>
-               
-                    <div class="prediction-submit">
-                        <button class="btn btn-primary" id="predict-btn">
-                            <i class="fas fa-heart"></i>
-                            Predict Heart Disease Risk
-                        </button>
-                    </div>
-                </div>
-                <div class="prediction-results">
-                    <div class="result-card" id="result-card">
-                        <h3>Your Heart Disease Risk Result</h3>
-                        <div class="prediction-chart">
-                            <div class="risk-meter">
-                                <div class="risk-circle">
-                                    <div class="risk-inner">
-                                        <span class="risk-percentage" id="risk-percentage">0%</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="risk-details">
-                                <div class="risk-level" id="risk-level">Low Risk</div>
-                                <p class="risk-message" id="risk-message">Please fill out the form to get your heart disease risk prediction.</p>
-                                <div class="download-report">
-                                    <button class="btn btn-outline" id="download-btn" disabled>
-                                        <i class="fas fa-file-download"></i>
-                                        Download PDF Report
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div class="container">
+        <div class="section-header">
+          <h2>Heart Disease Prediction</h2>
+          <p>
+            Enter your health parameters below to get an instant prediction of
+            your heart disease risk.
+          </p>
         </div>
+        <div class="prediction-container">
+          <div class="prediction-form">
+            <div class="form-header">
+              <h3>Your Health Information</h3>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="age">Age(in days)</label>
+                <input
+                  type="number"
+                  id="age"
+                  class="form-control"
+                  placeholder="Enter your age"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="height">Height (in cm)</label>
+                <input
+                  type="number"
+                  id="height"
+                  class="form-control"
+                  placeholder="Enter your height"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="weight">weight (in Kg)</label>
+                <input
+                  type="number"
+                  id="weight"
+                  class="form-control"
+                  placeholder="Enter your weight"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="sex">Sex</label>
+                <select id="sex" class="form-control">
+                  <option value="">Select</option>
+                  <option value="1">Male</option>
+                  <option value="0">Female</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="ap_hi">Systolic Blood Pressure (ap_hi)</label>
+              <input
+                type="number"
+                step="0.1"
+                id="ap_hi"
+                class="form-control"
+                placeholder="Enter your Systolic Blood Pressure (ap_hi)"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="ap_lo">Diastolic Blood Pressure (ap_lo)</label>
+              <input
+                type="number"
+                step="0.1"
+                id="ap_lo"
+                class="form-control"
+                placeholder="Enter your Diastolic Blood Pressure (ap_lo)"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="ch"
+                >Cholesterol(1: Normal, 2: Above Normal, 3: Well Above
+                Normal)</label
+              >
+              <input
+                type="number"
+                step="0.1"
+                id="ch"
+                class="form-control"
+                placeholder="Enter your Cholesterol "
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="gl"
+                >Glucose(1: Normal, 2: Above Normal, 3: Well Above
+                Normal)</label
+              >
+              <input
+                type="number"
+                step="0.1"
+                id="gl"
+                class="form-control"
+                placeholder="Enter your Glucose "
+              />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="smoking">Do you smoke?</label>
+                <select id="smoking" class="form-control">
+                  <option value="">Select</option>
+                  <option value="1">Yes</option>
+                  <option value="0">No</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="alcohol">Do you drink alcohol?</label>
+                <select id="alcohol" class="form-control">
+                  <option value="">Select</option>
+                  <option value="1">Yes</option>
+                  <option value="0">No</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="physical">Physical activity in past 30 days?</label>
+                <select id="physical" class="form-control">
+                  <option value="">Select</option>
+                  <option value="1">Yes</option>
+                  <option value="0">No</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="prediction-submit">
+              <button class="btn btn-primary" id="predict-btn">
+                <i class="fas fa-heart"></i>
+                Predict Heart Disease Risk
+              </button>
+            </div>
+          </div>
+          <div class="prediction-results">
+            <div class="result-card" id="result-card">
+              <h3>Your Heart Disease Risk Result</h3>
+              <div class="prediction-chart">
+                <div class="risk-meter">
+                  <div class="risk-circle">
+                    <div class="risk-inner">
+                      <span class="risk-percentage" id="risk-percentage"
+                        >0%</span
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="risk-details">
+                  <div class="risk-level" id="risk-level">Low Risk</div>
+                  <p class="risk-message" id="risk-message">
+                    Please fill out the form to get your heart disease risk
+                    prediction.
+                  </p>
+                  <div class="download-report">
+                    <button class="btn btn-outline" id="download-btn" disabled>
+                      <i class="fas fa-file-download"></i>
+                      Download PDF Report
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- CHATBOT SECTION -->
     <section class="chatbot" id="chatbot">
-        <div class="container">
-            <div class="section-header">
-                <h2>AI Health Assistant</h2>
-                <p>Get personalized health advice and answers to your questions from our intelligent AI chatbot.</p>
-            </div>
-            <div class="chatbot-container">
-                <div class="chatbot-wrapper">
-                    <div class="chatbot-header">
-                        <div class="bot-avatar">
-                            <i class="fas fa-robot"></i>
-                        </div>
-                        <div class="bot-info">
-                            <h3>CardioBot</h3>
-                            <small>AI Health Assistant</small>
-                        </div>
-                    </div>
-                    <div class="chatbot-messages" id="chat-messages">
-                        <div class="message bot">
-                            Hello! I'm CardioBot, your AI health assistant. How can I help you with your heart health questions today?
-                            <div class="message-time">Just now</div>
-                        </div>
-                    </div>
-                    <div class="chatbot-suggestions">
-                        <div class="suggestion-chip">What is heart disease?</div>
-                        <div class="suggestion-chip">How can I lower my risk?</div>
-                        <div class="suggestion-chip">Explain my results</div>
-                        <div class="suggestion-chip">Heart healthy diet tips</div>
-                    </div>
-                    <div class="chatbot-input">
-                        <input type="text" placeholder="Type your message here..." id="chat-input">
-                        <button id="send-btn">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="chatbot-info">
-                    <div class="info-card">
-                        <h3>How CardioBot Helps You</h3>
-                        <ul class="info-list">
-                            <li>
-                                <i class="fas fa-check-circle"></i>
-                                <div>Get answers to health questions 24/7</div>
-                            </li>
-                            <li>
-                                <i class="fas fa-check-circle"></i>
-                                <div>Receive personalized lifestyle recommendations</div>
-                            </li>
-                            <li>
-                                <i class="fas fa-check-circle"></i>
-                                <div>Learn about heart disease risk factors</div>
-                            </li>
-                            <li>
-                                <i class="fas fa-check-circle"></i>
-                                <div>Understand your prediction results</div>
-                            </li>
-                            <li>
-                                <i class="fas fa-check-circle"></i>
-                                <div>Track your progress with helpful reminders</div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+      <div class="container">
+        <div class="section-header">
+          <h2>AI Health Assistant</h2>
+          <p>
+            Get personalized health advice and answers to your questions from
+            our intelligent AI chatbot.
+          </p>
         </div>
+        <div class="chatbot-container">
+          <div class="chatbot-wrapper">
+            <div class="chatbot-header">
+              <div class="bot-avatar">
+                <i class="fas fa-robot"></i>
+              </div>
+              <div class="bot-info">
+                <h3>CardioBot</h3>
+                <small>AI Health Assistant</small>
+              </div>
+            </div>
+            <div class="chatbot-messages" id="chat-messages">
+              <div class="message bot">
+                Hello! I'm CardioBot, your AI health assistant. How can I help
+                you with your heart health questions today?
+                <div class="message-time">Just now</div>
+              </div>
+            </div>
+            <div class="chatbot-suggestions">
+              <div class="suggestion-chip">What is heart disease?</div>
+              <div class="suggestion-chip">How can I lower my risk?</div>
+              <div class="suggestion-chip">Explain my results</div>
+              <div class="suggestion-chip">Heart healthy diet tips</div>
+            </div>
+            <div class="chatbot-input">
+              <input
+                type="text"
+                placeholder="Type your message here..."
+                id="chat-input"
+              />
+              <button id="send-btn">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+          <div class="chatbot-info">
+            <div class="info-card">
+              <h3>How CardioBot Helps You</h3>
+              <ul class="info-list">
+                <li>
+                  <i class="fas fa-check-circle"></i>
+                  <div>Get answers to health questions 24/7</div>
+                </li>
+                <li>
+                  <i class="fas fa-check-circle"></i>
+                  <div>Receive personalized lifestyle recommendations</div>
+                </li>
+                <li>
+                  <i class="fas fa-check-circle"></i>
+                  <div>Learn about heart disease risk factors</div>
+                </li>
+                <li>
+                  <i class="fas fa-check-circle"></i>
+                  <div>Understand your prediction results</div>
+                </li>
+                <li>
+                  <i class="fas fa-check-circle"></i>
+                  <div>Track your progress with helpful reminders</div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- TESTIMONIALS SECTION -->
     <section class="testimonials">
-        <div class="container">
-            <div class="section-header">
-                <h2>User Testimonials</h2>
-                <p>See what our users are saying about CardioSense.AI</p>
-            </div>
-            <div class="testimonial-slider">
-                <div class="testimonial-track" id="testimonial-track">
-                    <div class="testimonial-card">
-                        <div class="testimonial-content">
-                            <p>CardioSense.AI helped me identify my heart disease risk early. Following the recommendations has improved my health metrics significantly in just three months.</p>
-                        </div>
-                        <div class="testimonial-author">
-                            <div class="author-avatar">JD</div>
-                            <div class="author-info">
-                                <h4>John Davis</h4>
-                                <small>Software Engineer, 42</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="testimonial-card">
-                        <div class="testimonial-content">
-                            <p>The AI chatbot is incredibly helpful. It answered all my questions and helped me understand what lifestyle changes I needed to make to improve my heart health.</p>
-                        </div>
-                        <div class="testimonial-author">
-                            <div class="author-avatar">SM</div>
-                            <div class="author-info">
-                                <h4>Sarah Miller</h4>
-                                <small>Teacher, 38</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="testimonial-card">
-                        <div class="testimonial-content">
-                            <p>I've been using the PDF reports to share with my doctor. It has made our consultations much more productive as we can focus on specific risk factors.</p>
-                        </div>
-                        <div class="testimonial-author">
-                            <div class="author-avatar">RJ</div>
-                            <div class="author-info">
-                                <h4>Robert Johnson</h4>
-                                <small>Retired, 65</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="testimonial-controls">
-                    <div class="testimonial-dot active"></div>
-                    <div class="testimonial-dot"></div>
-                    <div class="testimonial-dot"></div>
-                </div>
-            </div>
+      <div class="container">
+        <div class="section-header">
+          <h2>User Testimonials</h2>
+          <p>See what our users are saying about CardioSense.AI</p>
         </div>
+        <div class="testimonial-slider">
+          <div class="testimonial-track" id="testimonial-track">
+            <div class="testimonial-card">
+              <div class="testimonial-content">
+                <p>
+                  CardioSense.AI helped me identify my heart disease risk early.
+                  Following the recommendations has improved my health metrics
+                  significantly in just three months.
+                </p>
+              </div>
+              <div class="testimonial-author">
+                <div class="author-avatar">JD</div>
+                <div class="author-info">
+                  <h4>John Davis</h4>
+                  <small>Software Engineer, 42</small>
+                </div>
+              </div>
+            </div>
+            <div class="testimonial-card">
+              <div class="testimonial-content">
+                <p>
+                  The AI chatbot is incredibly helpful. It answered all my
+                  questions and helped me understand what lifestyle changes I
+                  needed to make to improve my heart health.
+                </p>
+              </div>
+              <div class="testimonial-author">
+                <div class="author-avatar">SM</div>
+                <div class="author-info">
+                  <h4>Sarah Miller</h4>
+                  <small>Teacher, 38</small>
+                </div>
+              </div>
+            </div>
+            <div class="testimonial-card">
+              <div class="testimonial-content">
+                <p>
+                  I've been using the PDF reports to share with my doctor. It
+                  has made our consultations much more productive as we can
+                  focus on specific risk factors.
+                </p>
+              </div>
+              <div class="testimonial-author">
+                <div class="author-avatar">RJ</div>
+                <div class="author-info">
+                  <h4>Robert Johnson</h4>
+                  <small>Retired, 65</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-controls">
+            <div class="testimonial-dot active"></div>
+            <div class="testimonial-dot"></div>
+            <div class="testimonial-dot"></div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- FOOTER -->
     <footer class="footer" id="contact">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-about">
-                    <div class="footer-logo">
-                        <div class="logo">
-                            <i class="fas fa-heartbeat"></i>
-                            <span>CardioSense.AI</span>
-                        </div>
-                    </div>
-                    <p>CardioSense.AI is an AI-powered heart disease prediction system that helps users assess their risk and take proactive measures toward better heart health.</p>
-                    <div class="social-links">
-                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#features">Features</a></li>
-                        <li><a href="#prediction">Prediction</a></li>
-                        <li><a href="#chatbot">AI Assistant</a></li>
-                        <li><a href="#contact">Contact Us</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h3>Resources</h3>
-                    <ul>
-                        <li><a href="#">About Heart Disease</a></li>
-                        <li><a href="#">Health Tips</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms of Service</a></li>
-                        <li><a href="#">FAQ</a></li>
-                    </ul>
-                </div>
-                <div class="footer-newsletter">
-                    <h3>Stay Updated</h3>
-                    <p>Subscribe to our newsletter to receive the latest updates on heart health and our AI technology.</p>
-                    <div class="newsletter-form">
-                        <input type="email" placeholder="Your email address">
-                        <button>Subscribe</button>
-                    </div>
-                </div>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-about">
+            <div class="footer-logo">
+              <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                <span>CardioSense.AI</span>
+              </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 CardioSense.AI. All rights reserved.</p>
+            <p>
+              CardioSense.AI is an AI-powered heart disease prediction system
+              that helps users assess their risk and take proactive measures
+              toward better heart health.
+            </p>
+            <div class="social-links">
+              <a href="#" class="social-link"
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+              <a href="#" class="social-link"
+                ><i class="fab fa-linkedin-in"></i
+              ></a>
+              <a href="#" class="social-link"
+                ><i class="fab fa-instagram"></i
+              ></a>
             </div>
+          </div>
+          <div class="footer-links">
+            <h3>Quick Links</h3>
+            <ul>
+              <li><a href="#home">Home</a></li>
+              <li><a href="#features">Features</a></li>
+              <li><a href="#prediction">Prediction</a></li>
+              <li><a href="#chatbot">AI Assistant</a></li>
+              <li><a href="#contact">Contact Us</a></li>
+            </ul>
+          </div>
+          <div class="footer-links">
+            <h3>Resources</h3>
+            <ul>
+              <li><a href="#">About Heart Disease</a></li>
+              <li><a href="#">Health Tips</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+              <li><a href="#">Terms of Service</a></li>
+              <li><a href="#">FAQ</a></li>
+            </ul>
+          </div>
+          <div class="footer-newsletter">
+            <h3>Stay Updated</h3>
+            <p>
+              Subscribe to our newsletter to receive the latest updates on heart
+              health and our AI technology.
+            </p>
+            <div class="newsletter-form">
+              <input type="email" placeholder="Your email address" />
+              <button>Subscribe</button>
+            </div>
+          </div>
         </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 CardioSense.AI. All rights reserved.</p>
+        </div>
+      </div>
     </footer>
 
-    <script src="index.js"></script>
+    <script>
+      // DOM Elements
+      const predictBtn = document.getElementById("predict-btn");
+      const downloadBtn = document.getElementById("download-btn");
+      const resultCard = document.getElementById("result-card");
+      const riskPercentage = document.getElementById("risk-percentage");
+      const riskLevel = document.getElementById("risk-level");
+      const riskMessage = document.getElementById("risk-message");
 
-</body>
+      // Function to call Flask API for ML prediction
+      async function fetchPrediction(inputData) {
+        try {
+          let response = await fetch("http://127.0.0.1:5000/predict", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(inputData),
+          });
+
+          let result = await response.json();
+
+          if (result.error) {
+            throw new Error(result.error);
+          }
+
+          return result;
+        } catch (error) {
+          console.error("Prediction error:", error);
+          return null;
+        }
+      }
+
+      // Handle prediction form submission
+      predictBtn.addEventListener("click", async function () {
+        // Collect user input
+        const inputData = {
+          age: document.getElementById("age").value,
+          height: document.getElementById("height").value,
+          weight: document.getElementById("weight").value,
+          gender: document.getElementById("sex").value,
+          ap_hi: document.getElementById("ap_hi").value,
+          ap_lo: document.getElementById("ap_lo").value,
+          cholesterol: document.getElementById("ch").value,
+          gluc: document.getElementById("gl").value,
+          smoke: document.getElementById("smoking").value,
+          alco: document.getElementById("alcohol").value,
+          active: document.getElementById("physical").value,
+        };
+
+        // Validate inputs
+        for (let key in inputData) {
+          if (inputData[key] === "" || inputData[key] === null) {
+            alert("Please fill out all fields before submitting.");
+            return;
+          }
+        }
+
+        // Show loading state
+        riskPercentage.textContent = "";
+        riskLevel.textContent = "Calculating...";
+        riskMessage.textContent = "Processing your input...";
+
+        // Get prediction from Flask API
+        const predictionResult = await fetchPrediction(inputData);
+
+        if (predictionResult) {
+          // Update UI with the model's prediction
+          riskPercentage.textContent = `${(
+            predictionResult.probability * 100
+          ).toFixed(2)}%`;
+          riskLevel.textContent = predictionResult.prediction;
+          riskMessage.textContent = `Probability of heart disease: ${(
+            predictionResult.probability * 100
+          ).toFixed(2)}%`;
+
+          // Activate result card
+          resultCard.classList.add("active");
+
+          // Enable download button
+          downloadBtn.disabled = false;
+
+          // Change risk meter color
+          const riskCircle = document.querySelector(".risk-circle");
+          if (predictionResult.probability > 0.7) {
+            riskCircle.style.background = "var(--danger)";
+          } else if (predictionResult.probability > 0.4) {
+            riskCircle.style.background = "var(--warning)";
+          } else {
+            riskCircle.style.background = "var(--primary)";
+          }
+        } else {
+          riskLevel.textContent = "Error";
+          riskMessage.textContent =
+            "An error occurred during prediction. Please try again.";
+        }
+      });
+
+      // Handle PDF download (optional future implementation)
+      downloadBtn.addEventListener("click", async function () {
+        alert("Feature coming soon: PDF Report Download!");
+      });
+    </script>
+  </body>
 </html>
