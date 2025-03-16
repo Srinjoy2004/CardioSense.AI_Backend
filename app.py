@@ -10,10 +10,12 @@ CORS(app)  # Allow frontend to communicate with backend
 
 # Load the trained ML model
 model = joblib.load("xgb_heart_disease_model_2.pkl")
+from flask import Flask, render_template
 
 @app.route("/")
 def home():
-    return send_from_directory("", "index.html")  # Serve index.html from home directory
+    return render_template("index.html")  # ✅ Correct way to serve index.html from templates
+
 
 @app.route('/predict', methods=['POST'])
 def predict():
