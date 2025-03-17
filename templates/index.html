@@ -29,6 +29,28 @@
         </div>
     </nav>
 
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+          const navLinks = document.querySelectorAll(".nav-links a");
+  
+          navLinks.forEach(link => {
+              link.addEventListener("click", function (event) {
+                  event.preventDefault(); // Prevent default anchor behavior
+  
+                  const targetId = this.getAttribute("href"); // Get target section ID
+                  const targetSection = document.querySelector(targetId);
+  
+                  if (targetSection) {
+                      window.scrollTo({
+                          top: targetSection.offsetTop - 80, // Adjust offset if navbar is fixed
+                          behavior: "smooth" // Enables smooth scrolling
+                      });
+                  }
+              });
+          });
+      });
+  </script>
+
     <!-- HERO SECTION -->
     <section class="hero" id="home">
         <div class="hero-bg"></div>
@@ -37,16 +59,16 @@
                 <div class="hero-text">
                     <h1>AI-Powered <span>Heart Disease</span> Prediction System</h1>
                     <p>CardioSense.AI uses advanced machine learning algorithms to predict your risk of heart disease based on key health indicators. Get personalized insights, recommendations, and take control of your heart health today.</p>
-                    <div class="hero-buttons">
-                        <button class="btn btn-primary">
-                            <i class="fas fa-calculator"></i>
-                            Start Prediction
-                        </button>
-                        <button class="btn btn-outline">
-                            <i class="fas fa-info-circle"></i>
-                            Learn More
-                        </button>
-                    </div>
+                    <div id="navbar" class="hero-buttons">
+                      <button class="btn btn-primary" onclick="location.href='#prediction'">
+                          <i class="fas fa-calculator"></i>
+                          Start Prediction
+                      </button>
+                      <button class="btn btn-outline" onclick="location.href='#features'">
+                          <i class="fas fa-info-circle"></i>
+                          Learn More
+                      </button>
+                  </div>
                 </div>
                 <div class="hero-image">
                     <img src="static\images\istockphoto-1126458889-612x612-removebg-preview.png" alt="Heart Health Visualization">
@@ -390,6 +412,37 @@
         </div>
     </section>
 
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+          let index = 0;
+          const testimonials = document.querySelectorAll(".testimonial-card");
+          const dots = document.querySelectorAll(".testimonial-dot");
+          const totalTestimonials = testimonials.length;
+  
+          function updateSlider() {
+              // Reset all testimonials
+              testimonials.forEach((card, i) => {
+                  card.style.display = "none";
+                  dots[i].classList.remove("active");
+              });
+  
+              // Show the current testimonial
+              testimonials[index].style.display = "block";
+              dots[index].classList.add("active");
+  
+              // Move to the next testimonial
+              index = (index + 1) % totalTestimonials;
+          }
+  
+          // Initial call
+          updateSlider();
+  
+          // Auto-slide every 3 seconds
+          setInterval(updateSlider, 3000);
+      });
+  </script>
+
     <!-- FOOTER -->
     <footer class="footer" id="contact">
         <div class="container">
@@ -430,12 +483,12 @@
                     </ul>
                 </div>
                 <div class="footer-newsletter">
-                    <h3>Stay Updated</h3>
-                    <p>Subscribe to our newsletter to receive the latest updates on heart health and our AI technology.</p>
-                    <div class="newsletter-form">
-                        <input type="email" placeholder="Your email address">
-                        <button>Subscribe</button>
-                    </div>
+                  <h3> Our Newsletter</h3>
+                  <p>Subscribe to our newsletter to receive the latest updates on heart health and our AI technology.</p>
+                  <div class="newsletter-form">
+                      <input type="email" id="email-input" placeholder="Your email address">
+                      <button onclick="validateEmail()">Subscribe</button>
+                  </div>
                 </div>
             </div>
             <div class="footer-bottom">
@@ -443,6 +496,24 @@
             </div>
         </div>
     </footer>
+
+    <script>
+      function validateEmail() {
+          const emailInput = document.getElementById("email-input");
+          const email = emailInput.value.trim();
+          const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email regex
+  
+          if (email === "") {
+              alert("Please enter your email address.");
+          } else if (!emailPattern.test(email)) {
+              alert("Please enter a valid email address.");
+          } else {
+              alert("Thank you for subscribing! You will receive our latest updates.");
+              emailInput.value = ""; // Clear input after successful subscription
+          }
+      }
+  </script>
+
 
     <script src="/static/index.js"></script>
    
