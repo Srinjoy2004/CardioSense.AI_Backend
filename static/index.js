@@ -207,113 +207,110 @@ suggestionChips.forEach((chip) => {
 
 // Testimonial slider
 let currentSlide = 0;
-const testimonialCards = document.querySelectorAll(".testimonial-card");
+const testimonialCards = document.querySelectorAll('.testimonial-card');
 const slideWidth = testimonialCards[0].offsetWidth + 30; // card width + gap
 
 function goToSlide(slideIndex) {
-  currentSlide = slideIndex;
-  testimonialTrack.style.transform = `translateX(-${
-    slideIndex * slideWidth
-  }px)`;
-
-  // Update dots
-  testimonialDots.forEach((dot, index) => {
-    if (index === slideIndex) {
-      dot.classList.add("active");
-    } else {
-      dot.classList.remove("active");
-    }
-  });
+    currentSlide = slideIndex;
+    testimonialTrack.style.transform = `translateX(-${slideIndex * slideWidth}px)`;
+    
+    // Update dots
+    testimonialDots.forEach((dot, index) => {
+        if (index === slideIndex) {
+            dot.classList.add('active');
+        } else {
+            dot.classList.remove('active');
+        }
+    });
 }
 
 testimonialDots.forEach((dot, index) => {
-  dot.addEventListener("click", () => {
-    goToSlide(index);
-  });
+    dot.addEventListener('click', () => {
+        goToSlide(index);
+    });
 });
 
 // Auto slide
 setInterval(() => {
-  currentSlide = (currentSlide + 1) % testimonialCards.length;
-  goToSlide(currentSlide);
+    currentSlide = (currentSlide + 1) % testimonialCards.length;
+    goToSlide(currentSlide);
 }, 5000);
 
 // Animation on scroll
 const observerOptions = {
-  root: null,
-  rootMargin: "0px",
-  threshold: 0.1,
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.1
 };
 
 const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add("animate");
-      observer.unobserve(entry.target);
-    }
-  });
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('animate');
+            observer.unobserve(entry.target);
+        }
+    });
 }, observerOptions);
 
-document.querySelectorAll(".feature-card, .info-card").forEach((card) => {
-  observer.observe(card);
+document.querySelectorAll('.feature-card, .info-card').forEach(card => {
+    observer.observe(card);
 });
 
 // Initialize tooltips
-document.querySelectorAll(".tooltip").forEach((tooltip) => {
-  tooltip.addEventListener("mouseover", () => {
-    tooltip.querySelector(".tooltip-text").style.visibility = "visible";
-    tooltip.querySelector(".tooltip-text").style.opacity = "1";
-  });
-
-  tooltip.addEventListener("mouseout", () => {
-    tooltip.querySelector(".tooltip-text").style.visibility = "hidden";
-    tooltip.querySelector(".tooltip-text").style.opacity = "0";
-  });
+document.querySelectorAll('.tooltip').forEach(tooltip => {
+    tooltip.addEventListener('mouseover', () => {
+        tooltip.querySelector('.tooltip-text').style.visibility = 'visible';
+        tooltip.querySelector('.tooltip-text').style.opacity = '1';
+    });
+    
+    tooltip.addEventListener('mouseout', () => {
+        tooltip.querySelector('.tooltip-text').style.visibility = 'hidden';
+        tooltip.querySelector('.tooltip-text').style.opacity = '0';
+    });
 });
 
 // Smooth scrolling for navigation links
-document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-  anchor.addEventListener("click", function (e) {
-    e.preventDefault();
-
-    const targetId = this.getAttribute("href");
-    const targetElement = document.querySelector(targetId);
-
-    if (targetElement) {
-      window.scrollTo({
-        top: targetElement.offsetTop - 70,
-        behavior: "smooth",
-      });
-
-      // Update active link
-      document.querySelectorAll(".nav-links a").forEach((link) => {
-        link.classList.remove("active");
-      });
-      this.classList.add("active");
-    }
-  });
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+        
+        if (targetElement) {
+            window.scrollTo({
+                top: targetElement.offsetTop - 70,
+                behavior: 'smooth'
+            });
+            
+            // Update active link
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.classList.remove('active');
+            });
+            this.classList.add('active');
+        }
+    });
 });
 
 // Update active navigation link on scroll
-window.addEventListener("scroll", () => {
-  const scrollPosition = window.scrollY;
-
-  document.querySelectorAll("section").forEach((section) => {
-    const sectionTop = section.offsetTop - 100;
-    const sectionBottom = sectionTop + section.offsetHeight;
-
-    if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
-      const currentId = section.getAttribute("id");
-      document.querySelectorAll(".nav-links a").forEach((link) => {
-        link.classList.remove("active");
-        if (link.getAttribute("href") === `#${currentId}`) {
-          link.classList.add("active");
+window.addEventListener('scroll', () => {
+    const scrollPosition = window.scrollY;
+    
+    document.querySelectorAll('section').forEach(section => {
+        const sectionTop = section.offsetTop - 100;
+        const sectionBottom = sectionTop + section.offsetHeight;
+        
+        if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+            const currentId = section.getAttribute('id');
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentId}`) {
+                    link.classList.add('active');
+                }
+            });
         }
-      });
-    }
-  });
+    });
 });
-
 // Initialize the page
 window.addEventListener("load", () => {
   // Simulate initial greeting from chatbot
@@ -322,4 +319,25 @@ window.addEventListener("load", () => {
       "I can answer questions about heart disease, risk factors, and healthy lifestyle choices. What would you like to know?"
     );
   }, 1000);
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navLinks = document.querySelectorAll(".nav-links a");
+
+  navLinks.forEach(link => {
+    link.addEventListener("click", function (event) {
+      event.preventDefault(); // Prevent default anchor behavior
+
+      const targetId = this.getAttribute("href").substring(1); // Remove the #
+      const targetSection = document.getElementById(targetId);
+
+      if (targetSection) {
+        window.scrollTo({
+          top: targetSection.offsetTop - 60, // Adjust offset if needed
+          behavior: "smooth"
+        });
+      }
+    });
+  });
 });
