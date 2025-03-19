@@ -261,6 +261,10 @@
                   <i class="fas fa-heart"></i>
                   Predict Heart Disease Risk
                 </button>
+                <button class="btn" id="clear-btn">
+                  <i class="fas fa-sync-alt"></i>
+                  Clear
+              </button>
               </div>
             </div>
             <div class="prediction-results">
@@ -294,6 +298,28 @@
             </div>
           </div>
         </div>
+        <script>
+          document.getElementById("clear-btn").addEventListener("click", function() {
+             
+              document.getElementById("age").value = "";
+              document.getElementById("height").value = "";
+              document.getElementById("weight").value = "";
+              document.getElementById("sex").value = "";
+              document.getElementById("ap_hi").value = "";
+              document.getElementById("ap_lo").value = "";
+              document.getElementById("ch").value = "1"; 
+              document.getElementById("gl").value = "1"; 
+              document.getElementById("smoking").value = "";
+              document.getElementById("alcohol").value = "";
+              document.getElementById("physical").value = "";
+  
+              
+              document.getElementById("risk-percentage").innerText = "0%";
+              document.getElementById("risk-level").innerText = "Low Risk";
+              document.getElementById("risk-message").innerText = "Please fill out the form to get your heart disease risk prediction.";
+              document.getElementById("download-btn").disabled = true;
+          });
+      </script>
       </section>
 
     <!-- CHATBOT SECTION -->
