@@ -486,7 +486,7 @@
                   <h3> Our Newsletter</h3>
                   <p>Subscribe to our newsletter to receive the latest updates on heart health and our AI technology.</p>
                   <div class="newsletter-form">
-                      <input type="email" id="email-input" placeholder="Your email address">
+                      <input type="email" id="email-input" name="newsletter-email" placeholder="Your email address">
                       <button onclick="validateEmail()">Subscribe</button>
                   </div>
                 </div>
@@ -508,10 +508,31 @@
           } else if (!emailPattern.test(email)) {
               alert("Please enter a valid email address.");
           } else {
-              alert("Thank you for subscribing! You will receive our latest updates.");
-              emailInput.value = ""; // Clear input after successful subscription
+              
+                // Send POST request to backend
+                fetch('/newsletter/subscribe', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({ email: email })
+                })
+                .then(response => response.json())
+                .then(data => {
+                  if (data.message) {
+                      alert(data.message); // Show success message
+                      emailInput.value = "";
+                  } else if (data.error) {
+                      alert("Subscription failed: " + data.error);
+                  }
+                })
+                .catch(error => {
+                  console.error('Error:', error);
+                  alert("An error occurred while subscribing.");
+                });
           }
-      }
+        }
+              
   </script>
 
 
