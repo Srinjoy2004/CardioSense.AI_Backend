@@ -101,25 +101,75 @@ predictBtn.addEventListener("click", async function () {
   }
 });
 
-// Handle PDF download (optional future implementation)
+// Handle PDF download 
+// downloadBtn.addEventListener("click", async function () {
+//   alert("Feature coming soon: PDF Report Download!");
+// });
+
+// // Generate PDF report
+// function generatePDF(userData, result) {
+//   // In a real application, this would use a library like jsPDF
+//   console.log("Generating PDF report...");
+//   console.log("User Data:", userData);
+//   console.log("Result:", result);
+
+//   // Simulate download delay
+//   return new Promise((resolve) => {
+//     setTimeout(() => {
+//       resolve("report.pdf");
+//     }, 1000);
+//   });
+// }
+
+const { jsPDF } = window.jspdf;
+
+// Handle PDF download
 downloadBtn.addEventListener("click", async function () {
-  alert("Feature coming soon: PDF Report Download!");
+  // Show a notification or popup
+  alert("Your PDF report is being downloaded...");
+
+  // Get user data and prediction result
+  const userData = {
+    age: document.getElementById("age").value,
+    height: document.getElementById("height").value,
+    weight: document.getElementById("weight").value,
+    gender: document.getElementById("sex").value,
+    ap_hi: document.getElementById("ap_hi").value,
+    ap_lo: document.getElementById("ap_lo").value,
+    cholesterol: document.getElementById("ch").value,
+    glucose: document.getElementById("gl").value,
+    smoke: document.getElementById("smoking").value,
+    alcohol: document.getElementById("alcohol").value,
+    physical: document.getElementById("physical").value,
+    riskPercentage: document.getElementById("risk-percentage").innerText,
+    riskLevel: document.getElementById("risk-level").innerText,
+    riskMessage: document.getElementById("risk-message").innerText,
+  };
+
+  // Generate PDF
+  const pdfDoc = new jsPDF();
+  pdfDoc.setFontSize(18);
+  pdfDoc.text("CardioSense.AI - Heart Disease Prediction Report", 10, 20);
+  pdfDoc.setFontSize(12);
+  pdfDoc.text(`Age: ${userData.age} days`, 10, 40);
+  pdfDoc.text(`Height: ${userData.height} cm`, 10, 50);
+  pdfDoc.text(`Weight: ${userData.weight} kg`, 10, 60);
+  pdfDoc.text(`Gender: ${userData.gender == 1 ? "Male" : "Female"}`, 10, 70);
+  pdfDoc.text(`Systolic BP: ${userData.ap_hi}`, 10, 80);
+  pdfDoc.text(`Diastolic BP: ${userData.ap_lo}`, 10, 90);
+  pdfDoc.text(`Cholesterol Level: ${userData.cholesterol}`, 10, 100);
+  pdfDoc.text(`Glucose Level: ${userData.glucose}`, 10, 110);
+  pdfDoc.text(`Smoking: ${userData.smoke == 1 ? "Yes" : "No"}`, 10, 120);
+  pdfDoc.text(`Alcohol Consumption: ${userData.alcohol == 1 ? "Yes" : "No"}`, 10, 130);
+  pdfDoc.text(`Physical Activity: ${userData.physical == 1 ? "Yes" : "No"}`, 10, 140);
+  pdfDoc.text(`Risk Percentage: ${userData.riskPercentage}`, 10, 160);
+  pdfDoc.text(`Risk Level: ${userData.riskLevel}`, 10, 170);
+  pdfDoc.text(`Message: ${userData.riskMessage}`, 10, 180);
+
+  // Save the PDF
+  pdfDoc.save("CardioSense_Heart_Report.pdf");
 });
 
-// Generate PDF report
-function generatePDF(userData, result) {
-  // In a real application, this would use a library like jsPDF
-  console.log("Generating PDF report...");
-  console.log("User Data:", userData);
-  console.log("Result:", result);
-
-  // Simulate download delay
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve("report.pdf");
-    }, 1000);
-  });
-}
 
 // Chatbot functionality
 function addMessage(message, isUser = false) {
