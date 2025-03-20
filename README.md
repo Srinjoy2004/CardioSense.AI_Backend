@@ -1,6 +1,6 @@
 # 💖 CardioSense.AI - AI-Powered Heart Disease Prediction System
 
-![CardioSense.AI Banner](https://yourimageurl.com/banner.png)  
+![image](https://github.com/user-attachments/assets/87bcfce8-82b5-4a4d-a0b6-89c852d402a1)  
 
 ## 🚀 About CardioSense.AI
 **CardioSense.AI** is an advanced AI-powered heart disease prediction system designed to provide early risk assessment based on key health indicators. Leveraging **XGBoost** and an **AI chatbot**, it delivers instant Yes/No predictions, personalized risk scores, and actionable health recommendations to empower individuals in their healthcare journey.
