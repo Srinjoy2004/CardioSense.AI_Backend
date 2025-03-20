@@ -123,12 +123,48 @@ predictBtn.addEventListener("click", async function () {
 
 const { jsPDF } = window.jspdf;
 
+// Function to call Google Gemini API
+async function fetchRecommendations(prediction, probability) {
+  const apiKey = "AIzaSyDD8QW1BggDVVMLteDygHCHrD6Ff9Dy0e8"; // ⚠️ NOT SECURE (for testing only)
+  const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+  const requestBody = {
+    contents: [{
+      parts: [{
+        text: `A patient has undergone a cardiovascular disease prediction test.
+        Prediction: ${prediction === 1 ? "Has Cardiovascular Disease" : "No Cardiovascular Disease"}
+        Probability of disease: ${probability.toFixed(2)}
+        Provide structured lifestyle recommendations including diet, exercise, medical advice and suggest medicines with dosage as per probanility of disease limit it to 600 words & remove bold text & heading stylings if any & provide in a text format.`
+      }]
+    }]
+  };
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    const result = await response.json();
+
+    if (result.candidates && result.candidates.length > 0) {
+      return result.candidates[0].content.parts[0].text; // Extract recommendations
+    } else {
+      throw new Error("No response from API");
+    }
+  } catch (error) {
+    console.error("AI API error:", error);
+    return "Error retrieving recommendations. Please consult a healthcare professional.";
+  }
+}
+
 // Handle PDF download
-downloadBtn.addEventListener("click", async function () {
-  // Show a notification or popup
+document.getElementById("download-btn").addEventListener("click", async function () {
   alert("Your PDF report is being downloaded...");
 
-  // Get user data and prediction result
   const userData = {
     age: document.getElementById("age").value,
     height: document.getElementById("height").value,
@@ -146,29 +182,72 @@ downloadBtn.addEventListener("click", async function () {
     riskMessage: document.getElementById("risk-message").innerText,
   };
 
+  const prediction = userData.riskLevel === "High Risk" ? 1 : 0;
+  const probability = parseFloat(userData.riskPercentage.replace("%", "")) / 100;
+
+  // Fetch AI-generated recommendations
+  const recommendations = await fetchRecommendations(prediction, probability);
+
   // Generate PDF
   const pdfDoc = new jsPDF();
+  let yPosition = 20; // Start position for text
+  
   pdfDoc.setFontSize(18);
-  pdfDoc.text("CardioSense.AI - Heart Disease Prediction Report", 10, 20);
+  pdfDoc.text("CardioSense.AI - Heart Disease Prediction Report", 10, yPosition);
+  
   pdfDoc.setFontSize(12);
-  pdfDoc.text(`Age: ${userData.age} days`, 10, 40);
-  pdfDoc.text(`Height: ${userData.height} cm`, 10, 50);
-  pdfDoc.text(`Weight: ${userData.weight} kg`, 10, 60);
-  pdfDoc.text(`Gender: ${userData.gender == 1 ? "Male" : "Female"}`, 10, 70);
-  pdfDoc.text(`Systolic BP: ${userData.ap_hi}`, 10, 80);
-  pdfDoc.text(`Diastolic BP: ${userData.ap_lo}`, 10, 90);
-  pdfDoc.text(`Cholesterol Level: ${userData.cholesterol}`, 10, 100);
-  pdfDoc.text(`Glucose Level: ${userData.glucose}`, 10, 110);
-  pdfDoc.text(`Smoking: ${userData.smoke == 1 ? "Yes" : "No"}`, 10, 120);
-  pdfDoc.text(`Alcohol Consumption: ${userData.alcohol == 1 ? "Yes" : "No"}`, 10, 130);
-  pdfDoc.text(`Physical Activity: ${userData.physical == 1 ? "Yes" : "No"}`, 10, 140);
-  pdfDoc.text(`Risk Percentage: ${userData.riskPercentage}`, 10, 160);
-  pdfDoc.text(`Risk Level: ${userData.riskLevel}`, 10, 170);
-  pdfDoc.text(`Message: ${userData.riskMessage}`, 10, 180);
+  yPosition += 20;
+  
+  const userDetails = [
+    `Age: ${userData.age} days`,
+    `Height: ${userData.height} cm`,
+    `Weight: ${userData.weight} kg`,
+    `Gender: ${userData.gender == 1 ? "Male" : "Female"}`,
+    `Systolic BP: ${userData.ap_hi}`,
+    `Diastolic BP: ${userData.ap_lo}`,
+    `Cholesterol Level: ${userData.cholesterol}`,
+    `Glucose Level: ${userData.glucose}`,
+    `Smoking: ${userData.smoke == 1 ? "Yes" : "No"}`,
+    `Alcohol Consumption: ${userData.alcohol == 1 ? "Yes" : "No"}`,
+    `Physical Activity: ${userData.physical == 1 ? "Yes" : "No"}`,
+    `Risk Percentage: ${userData.riskPercentage}`,
+    `Risk Level: ${userData.riskLevel}`,
+    `Message: ${userData.riskMessage}`
+  ];
 
-  // Save the PDF
+  userDetails.forEach(detail => {
+    if (yPosition > 270) {  // If text reaches near the bottom of the page, add a new page
+      pdfDoc.addPage();
+      yPosition = 20;
+    }
+    pdfDoc.text(detail, 10, yPosition);
+    yPosition += 10;
+  });
+
+  // Add AI Recommendations
+  pdfDoc.setFontSize(14);
+  if (yPosition > 250) {
+    pdfDoc.addPage();
+    yPosition = 20;
+  }
+  
+  pdfDoc.text("Lifestyle Recommendations:", 10, yPosition);
+  yPosition += 10;
+  pdfDoc.setFontSize(12);
+
+  const recommendationLines = pdfDoc.splitTextToSize(recommendations, 180);
+  recommendationLines.forEach(line => {
+    if (yPosition > 270) {
+      pdfDoc.addPage();
+      yPosition = 20;
+    }
+    pdfDoc.text(line, 10, yPosition);
+    yPosition += 8;
+  });
+
   pdfDoc.save("CardioSense_Heart_Report.pdf");
 });
+
 
 
 // Chatbot functionality
