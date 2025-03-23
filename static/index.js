@@ -11,6 +11,38 @@ const chatMessages = document.getElementById("chat-messages");
 const suggestionChips = document.querySelectorAll(".suggestion-chip");
 const testimonialTrack = document.getElementById("testimonial-track");
 const testimonialDots = document.querySelectorAll(".testimonial-dot");
+const heightInput = document.getElementById("height");
+const weightInput = document.getElementById("weight");
+const bmiInput = document.getElementById("bmi");
+
+// Calculate BMI when height or weight changes
+function calculateBMI() {
+  const height = parseFloat(heightInput.value);
+  const weight = parseFloat(weightInput.value);
+
+  if (height && weight && height > 0 && weight > 0) {
+    // BMI formula: weight(kg) / (height(m))²
+    const heightInMeters = height / 100;
+    const bmi = weight / (heightInMeters * heightInMeters);
+    bmiInput.value = bmi.toFixed(1);
+  }
+}
+
+// Auto-calculate BMI when height or weight changes
+heightInput.addEventListener("input", calculateBMI);
+weightInput.addEventListener("input", calculateBMI);
+
+// Make BMI field read-only but appear interactive
+bmiInput.addEventListener("click", function () {
+  // Recalculate BMI when clicked
+  calculateBMI();
+
+  // Focus on weight if BMI can't be calculated
+  if (!bmiInput.value) {
+    alert("Please enter both height and weight to calculate BMI");
+    weightInput.focus();
+  }
+});
 
 // Function to call Flask API for ML prediction
 async function fetchPrediction(inputData) {
@@ -41,16 +73,16 @@ predictBtn.addEventListener("click", async function () {
   // Collect user input
   const inputData = {
     age: document.getElementById("age").value,
-    height: document.getElementById("height").value,
-    weight: document.getElementById("weight").value,
+    bmi: document.getElementById("bmi").value,
     gender: document.getElementById("sex").value,
-    ap_hi: document.getElementById("ap_hi").value,
-    ap_lo: document.getElementById("ap_lo").value,
-    cholesterol: document.getElementById("ch").value,
-    gluc: document.getElementById("gl").value,
-    smoke: document.getElementById("smoking").value,
-    alco: document.getElementById("alcohol").value,
-    active: document.getElementById("physical").value,
+    cholesterol_level: document.getElementById("ch").value,
+    smoking: document.getElementById("smoking").value,
+    sleep_level: document.getElementById("sleep").value,
+    alcohol_intake: document.getElementById("alcohol").value,
+    physical_activity: document.getElementById("physical").value,
+    hypertension: document.getElementById("hypertension").value,
+    diabetes: document.getElementById("diabetes").value,
+    family_history: document.getElementById("family").value,
   };
 
   // Validate inputs
@@ -101,7 +133,7 @@ predictBtn.addEventListener("click", async function () {
   }
 });
 
-// Handle PDF download 
+// Handle PDF download (optional future implementation)
 // downloadBtn.addEventListener("click", async function () {
 //   alert("Feature coming soon: PDF Report Download!");
 // });
@@ -129,23 +161,31 @@ async function fetchRecommendations(prediction, probability) {
   const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
   const requestBody = {
-    contents: [{
-      parts: [{
-        text: `A patient has undergone a cardiovascular disease prediction test.
-        Prediction: ${prediction === 1 ? "Has Cardiovascular Disease" : "No Cardiovascular Disease"}
+    contents: [
+      {
+        parts: [
+          {
+            text: `A patient has undergone a cardiovascular disease prediction test.
+        Prediction: ${
+          prediction === 1
+            ? "Has Cardiovascular Disease"
+            : "No Cardiovascular Disease"
+        }
         Probability of disease: ${probability.toFixed(2)}
-        Provide structured lifestyle recommendations including diet, exercise, medical advice and suggest medicines with dosage as per probanility of disease limit it to 600 words & remove bold text & heading stylings if any & provide in a text format.`
-      }]
-    }]
+        Provide structured lifestyle recommendations including diet, exercise, medical advice and suggest medicines with dosage as per probanility of disease limit it to 600 words & remove bold text & heading stylings if any & provide in a text format.`,
+          },
+        ],
+      },
+    ],
   };
 
   try {
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(requestBody)
+      body: JSON.stringify(requestBody),
     });
 
     const result = await response.json();
@@ -162,93 +202,113 @@ async function fetchRecommendations(prediction, probability) {
 }
 
 // Handle PDF download
-document.getElementById("download-btn").addEventListener("click", async function () {
-  alert("Your PDF report is being downloaded...");
+document
+  .getElementById("download-btn")
+  .addEventListener("click", async function () {
+    alert("Your PDF report is being downloaded...");
 
-  const userData = {
-    age: document.getElementById("age").value,
-    height: document.getElementById("height").value,
-    weight: document.getElementById("weight").value,
-    gender: document.getElementById("sex").value,
-    ap_hi: document.getElementById("ap_hi").value,
-    ap_lo: document.getElementById("ap_lo").value,
-    cholesterol: document.getElementById("ch").value,
-    glucose: document.getElementById("gl").value,
-    smoke: document.getElementById("smoking").value,
-    alcohol: document.getElementById("alcohol").value,
-    physical: document.getElementById("physical").value,
-    riskPercentage: document.getElementById("risk-percentage").innerText,
-    riskLevel: document.getElementById("risk-level").innerText,
-    riskMessage: document.getElementById("risk-message").innerText,
-  };
+    const userData = {
+      age: document.getElementById("age").value,
+      height: document.getElementById("height").value,
+      weight: document.getElementById("weight").value,
+      bmi: document.getElementById("bmi").value,
+      gender: document.getElementById("sex").value,
+      cholesterol: document.getElementById("ch").value,
+      smoking: document.getElementById("smoking").value,
+      sleep: document.getElementById("sleep").value,
+      alcohol: document.getElementById("alcohol").value,
+      physical: document.getElementById("physical").value,
+      hypertension: document.getElementById("hypertension").value,
+      diabetes: document.getElementById("diabetes").value,
+      family: document.getElementById("family").value,
+      riskPercentage: document.getElementById("risk-percentage").innerText,
+      riskLevel: document.getElementById("risk-level").innerText,
+    };
 
-  const prediction = userData.riskLevel === "High Risk" ? 1 : 0;
-  const probability = parseFloat(userData.riskPercentage.replace("%", "")) / 100;
+    const prediction = userData.riskLevel === "High Risk" ? 1 : 0;
+    const probability =
+      parseFloat(userData.riskPercentage.replace("%", "")) / 100;
 
-  // Fetch AI-generated recommendations
-  const recommendations = await fetchRecommendations(prediction, probability);
+    // Fetch AI-generated recommendations
+    const recommendations = await fetchRecommendations(prediction, probability);
 
-  // Generate PDF
-  const pdfDoc = new jsPDF();
-  let yPosition = 20; // Start position for text
-  
-  pdfDoc.setFontSize(18);
-  pdfDoc.text("CardioSense.AI - Heart Disease Prediction Report", 10, yPosition);
-  
-  pdfDoc.setFontSize(12);
-  yPosition += 20;
-  
-  const userDetails = [
-    `Age: ${userData.age} days`,
-    `Height: ${userData.height} cm`,
-    `Weight: ${userData.weight} kg`,
-    `Gender: ${userData.gender == 1 ? "Male" : "Female"}`,
-    `Systolic BP: ${userData.ap_hi}`,
-    `Diastolic BP: ${userData.ap_lo}`,
-    `Cholesterol Level: ${userData.cholesterol}`,
-    `Glucose Level: ${userData.glucose}`,
-    `Smoking: ${userData.smoke == 1 ? "Yes" : "No"}`,
-    `Alcohol Consumption: ${userData.alcohol == 1 ? "Yes" : "No"}`,
-    `Physical Activity: ${userData.physical == 1 ? "Yes" : "No"}`,
-    `Risk Percentage: ${userData.riskPercentage}`,
-    `Risk Level: ${userData.riskLevel}`,
-    `Message: ${userData.riskMessage}`
-  ];
+    // Generate PDF
+    const pdfDoc = new jsPDF();
+    let yPosition = 20; // Start position for text
 
-  userDetails.forEach(detail => {
-    if (yPosition > 270) {  // If text reaches near the bottom of the page, add a new page
+    pdfDoc.setFontSize(18);
+    pdfDoc.text(
+      "CardioSense.AI - Heart Disease Prediction Report",
+      10,
+      yPosition
+    );
+
+    pdfDoc.setFontSize(12);
+    yPosition += 20;
+
+    const genderLabel = userData.gender == "1" ? "Male" : "Female";
+    const smokingLabel = ["No", "Occasionally", "Regular"][userData.smoking];
+    const alcoholLabel = ["No", "Occasionally", "Regular"][userData.alcohol];
+    const sleepLabel = ["Poor", "Average", "Good"][userData.sleep];
+    const physicalLabel = ["Low", "Medium", "High"][userData.physical];
+    const cholesterolLabel = ["Normal", "Borderline", "High"][
+      userData.cholesterol
+    ];
+    const hypertensionLabel = userData.hypertension == "1" ? "Yes" : "No";
+    const diabetesLabel = userData.diabetes == "1" ? "Yes" : "No";
+    const familyLabel = userData.family == "1" ? "Yes" : "No";
+
+    const userDetails = [
+      `Age: ${userData.age} years`,
+      `Height: ${userData.height} cm`,
+      `Weight: ${userData.weight} kg`,
+      `BMI: ${userData.bmi}`,
+      `Gender: ${genderLabel}`,
+      `Cholesterol Level: ${cholesterolLabel}`,
+      `Smoking: ${smokingLabel}`,
+      `Sleep Quality: ${sleepLabel}`,
+      `Alcohol Consumption: ${alcoholLabel}`,
+      `Physical Activity: ${physicalLabel}`,
+      `Hypertension: ${hypertensionLabel}`,
+      `Diabetes: ${diabetesLabel}`,
+      `Family History of Heart Disease: ${familyLabel}`,
+      `Risk Percentage: ${userData.riskPercentage}`,
+      `Risk Level: ${userData.riskLevel}`,
+    ];
+
+    userDetails.forEach((detail) => {
+      if (yPosition > 270) {
+        // If text reaches near the bottom of the page, add a new page
+        pdfDoc.addPage();
+        yPosition = 20;
+      }
+      pdfDoc.text(detail, 10, yPosition);
+      yPosition += 10;
+    });
+
+    // Add AI Recommendations
+    pdfDoc.setFontSize(14);
+    if (yPosition > 250) {
       pdfDoc.addPage();
       yPosition = 20;
     }
-    pdfDoc.text(detail, 10, yPosition);
+
+    pdfDoc.text("Lifestyle Recommendations:", 10, yPosition);
     yPosition += 10;
+    pdfDoc.setFontSize(12);
+
+    const recommendationLines = pdfDoc.splitTextToSize(recommendations, 180);
+    recommendationLines.forEach((line) => {
+      if (yPosition > 270) {
+        pdfDoc.addPage();
+        yPosition = 20;
+      }
+      pdfDoc.text(line, 10, yPosition);
+      yPosition += 8;
+    });
+
+    pdfDoc.save("CardioSense_Heart_Report.pdf");
   });
-
-  // Add AI Recommendations
-  pdfDoc.setFontSize(14);
-  if (yPosition > 250) {
-    pdfDoc.addPage();
-    yPosition = 20;
-  }
-  
-  pdfDoc.text("Lifestyle Recommendations:", 10, yPosition);
-  yPosition += 10;
-  pdfDoc.setFontSize(12);
-
-  const recommendationLines = pdfDoc.splitTextToSize(recommendations, 180);
-  recommendationLines.forEach(line => {
-    if (yPosition > 270) {
-      pdfDoc.addPage();
-      yPosition = 20;
-    }
-    pdfDoc.text(line, 10, yPosition);
-    yPosition += 8;
-  });
-
-  pdfDoc.save("CardioSense_Heart_Report.pdf");
-});
-
-
 
 // Chatbot functionality
 function addMessage(message, isUser = false) {
@@ -336,109 +396,111 @@ suggestionChips.forEach((chip) => {
 
 // Testimonial slider
 let currentSlide = 0;
-const testimonialCards = document.querySelectorAll('.testimonial-card');
+const testimonialCards = document.querySelectorAll(".testimonial-card");
 const slideWidth = testimonialCards[0].offsetWidth + 30; // card width + gap
 
 function goToSlide(slideIndex) {
-    currentSlide = slideIndex;
-    testimonialTrack.style.transform = `translateX(-${slideIndex * slideWidth}px)`;
-    
-    // Update dots
-    testimonialDots.forEach((dot, index) => {
-        if (index === slideIndex) {
-            dot.classList.add('active');
-        } else {
-            dot.classList.remove('active');
-        }
-    });
+  currentSlide = slideIndex;
+  testimonialTrack.style.transform = `translateX(-${
+    slideIndex * slideWidth
+  }px)`;
+
+  // Update dots
+  testimonialDots.forEach((dot, index) => {
+    if (index === slideIndex) {
+      dot.classList.add("active");
+    } else {
+      dot.classList.remove("active");
+    }
+  });
 }
 
 testimonialDots.forEach((dot, index) => {
-    dot.addEventListener('click', () => {
-        goToSlide(index);
-    });
+  dot.addEventListener("click", () => {
+    goToSlide(index);
+  });
 });
 
 // Auto slide
 setInterval(() => {
-    currentSlide = (currentSlide + 1) % testimonialCards.length;
-    goToSlide(currentSlide);
+  currentSlide = (currentSlide + 1) % testimonialCards.length;
+  goToSlide(currentSlide);
 }, 5000);
 
 // Animation on scroll
 const observerOptions = {
-    root: null,
-    rootMargin: '0px',
-    threshold: 0.1
+  root: null,
+  rootMargin: "0px",
+  threshold: 0.1,
 };
 
 const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('animate');
-            observer.unobserve(entry.target);
-        }
-    });
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("animate");
+      observer.unobserve(entry.target);
+    }
+  });
 }, observerOptions);
 
-document.querySelectorAll('.feature-card, .info-card').forEach(card => {
-    observer.observe(card);
+document.querySelectorAll(".feature-card, .info-card").forEach((card) => {
+  observer.observe(card);
 });
 
 // Initialize tooltips
-document.querySelectorAll('.tooltip').forEach(tooltip => {
-    tooltip.addEventListener('mouseover', () => {
-        tooltip.querySelector('.tooltip-text').style.visibility = 'visible';
-        tooltip.querySelector('.tooltip-text').style.opacity = '1';
-    });
-    
-    tooltip.addEventListener('mouseout', () => {
-        tooltip.querySelector('.tooltip-text').style.visibility = 'hidden';
-        tooltip.querySelector('.tooltip-text').style.opacity = '0';
-    });
+document.querySelectorAll(".tooltip").forEach((tooltip) => {
+  tooltip.addEventListener("mouseover", () => {
+    tooltip.querySelector(".tooltip-text").style.visibility = "visible";
+    tooltip.querySelector(".tooltip-text").style.opacity = "1";
+  });
+
+  tooltip.addEventListener("mouseout", () => {
+    tooltip.querySelector(".tooltip-text").style.visibility = "hidden";
+    tooltip.querySelector(".tooltip-text").style.opacity = "0";
+  });
 });
 
 // Smooth scrolling for navigation links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        const targetId = this.getAttribute('href');
-        const targetElement = document.querySelector(targetId);
-        
-        if (targetElement) {
-            window.scrollTo({
-                top: targetElement.offsetTop - 70,
-                behavior: 'smooth'
-            });
-            
-            // Update active link
-            document.querySelectorAll('.nav-links a').forEach(link => {
-                link.classList.remove('active');
-            });
-            this.classList.add('active');
-        }
-    });
+document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+  anchor.addEventListener("click", function (e) {
+    e.preventDefault();
+
+    const targetId = this.getAttribute("href");
+    const targetElement = document.querySelector(targetId);
+
+    if (targetElement) {
+      window.scrollTo({
+        top: targetElement.offsetTop - 70,
+        behavior: "smooth",
+      });
+
+      // Update active link
+      document.querySelectorAll(".nav-links a").forEach((link) => {
+        link.classList.remove("active");
+      });
+      this.classList.add("active");
+    }
+  });
 });
 
 // Update active navigation link on scroll
-window.addEventListener('scroll', () => {
-    const scrollPosition = window.scrollY;
-    
-    document.querySelectorAll('section').forEach(section => {
-        const sectionTop = section.offsetTop - 100;
-        const sectionBottom = sectionTop + section.offsetHeight;
-        
-        if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
-            const currentId = section.getAttribute('id');
-            document.querySelectorAll('.nav-links a').forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === `#${currentId}`) {
-                    link.classList.add('active');
-                }
-            });
+window.addEventListener("scroll", () => {
+  const scrollPosition = window.scrollY;
+
+  document.querySelectorAll("section").forEach((section) => {
+    const sectionTop = section.offsetTop - 100;
+    const sectionBottom = sectionTop + section.offsetHeight;
+
+    if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+      const currentId = section.getAttribute("id");
+      document.querySelectorAll(".nav-links a").forEach((link) => {
+        link.classList.remove("active");
+        if (link.getAttribute("href") === `#${currentId}`) {
+          link.classList.add("active");
         }
-    });
+      });
+    }
+  });
 });
 // Initialize the page
 window.addEventListener("load", () => {
@@ -450,11 +512,10 @@ window.addEventListener("load", () => {
   }, 1000);
 });
 
-
 document.addEventListener("DOMContentLoaded", function () {
   const navLinks = document.querySelectorAll(".nav-links a");
 
-  navLinks.forEach(link => {
+  navLinks.forEach((link) => {
     link.addEventListener("click", function (event) {
       event.preventDefault(); // Prevent default anchor behavior
 
@@ -464,9 +525,45 @@ document.addEventListener("DOMContentLoaded", function () {
       if (targetSection) {
         window.scrollTo({
           top: targetSection.offsetTop - 60, // Adjust offset if needed
-          behavior: "smooth"
+          behavior: "smooth",
         });
       }
     });
   });
 });
+
+
+function validateEmail() {
+  const emailInput = document.getElementById("email-input");
+  const email = emailInput.value.trim();
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email regex
+
+  if (email === "") {
+      alert("Please enter your email address.");
+  } else if (!emailPattern.test(email)) {
+      alert("Please enter a valid email address.");
+  } else {
+      
+        // Send POST request to backend
+        fetch('/newsletter/subscribe', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email: email })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.message) {
+              alert(data.message); // Show success message
+              emailInput.value = "";
+          } else if (data.error) {
+              alert("Subscription failed: " + data.error);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert("An error occurred while subscribing.");
+        });
+  }
+}
