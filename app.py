@@ -1,8 +1,9 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, render_template
 import joblib
+from flask_mail import Mail
+import numpy as np
 import pandas as pd
-import numpy as np  # Import NumPy to handle data types
-from sklearn.preprocessing import StandardScaler
+from flask_cors import CORS
 from flask_cors import CORS
 from flask_mail import Mail, Message  # Import Flask-Mail components
 import os  # Import the 'os' module
@@ -16,10 +17,6 @@ CORS(app)  # Allow frontend to communicate with backend
 # def uploaded_file(filename):
 #     return send_from_directory('static', filename)
 
-# Load the trained ML model
-model = joblib.load("xgb_heart_disease_model_2.pkl")
-from flask import Flask, render_template
-
 # Configure Flask-Mail
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
 app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT'))  # Convert to integer
@@ -27,14 +24,15 @@ app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') == 'True'  # Convert to b
 app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_USERNAME')
+mail = Mail(app)  # Initialize Flask-Mail
 
-mail = Mail(app)
 
+# Load the trained ML model
+model = joblib.load("xgboost2.0_model.pkl")
 
 @app.route("/")
 def home():
     return render_template("index.html")  # ✅ Correct way to serve index.html from templates
-
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -44,42 +42,50 @@ def predict():
 
         # Convert input values to correct data types
         age = int(data["age"])
-        height = float(data["height"])
-        weight = float(data["weight"])
         gender = int(data["gender"])
-        ap_hi = float(data["ap_hi"])
-        ap_lo = float(data["ap_lo"])
-        cholesterol = int(data["cholesterol"])
-        gluc = int(data["gluc"])
-        smoke = int(data["smoke"])
-        alco = int(data["alco"])
-        active = int(data["active"])
+        bmi = float(data["bmi"])
+        smoking = int(data["smoking"])
+        alcohol_intake = int(data["alcohol_intake"])
+        physical_activity = int(data["physical_activity"])
+        sleep_level = int(data["sleep_level"])
+        cholesterol_level = int(data["cholesterol_level"])
+        hypertension = int(data["hypertension"])
+        diabetes = int(data["diabetes"])
+        family_history = int(data["family_history"])
 
         # Create DataFrame
-        input_data = pd.DataFrame([[age, height, weight, gender, ap_hi, ap_lo, cholesterol, gluc, smoke, alco, active]],
-                                  columns=["age", "height", "weight", "gender", "ap_hi", "ap_lo", "cholesterol", "gluc", "smoke", "alco", "active"])
-
-        # Standardize numerical features
-        scaler = StandardScaler()
-        input_data[["age", "height", "weight", "ap_hi", "ap_lo"]] = scaler.fit_transform(
-            input_data[["age", "height", "weight", "ap_hi", "ap_lo"]])
-
+        input_data = np.array([[age, gender, bmi, smoking, alcohol_intake, physical_activity, sleep_level, 
+                                cholesterol_level, hypertension, diabetes, family_history]])
+        
         # Make prediction
-        prediction = int(model.predict(input_data)[0])  # Convert NumPy int to Python int
-        probability = float(model.predict_proba(input_data)[0][1])  # Convert NumPy float to Python float
-
+        prediction = int(model.predict(input_data)[0])
+        probability = float(max(model.predict_proba(input_data)[0]))  # 🔥 Convert NumPy float32 to Python float
+        
+        # Categorizing risk levels
+        if prediction == 0:
+            risk_level = "No Risk"
+        elif probability < 0.40:
+            risk_level = "Low Risk"
+        elif 0.40 <= probability < 0.75:
+            risk_level = "Moderate Risk"
+        else:
+            risk_level = "High Risk"
+        
         # Format response
         result = "Has Cardiovascular Disease" if prediction == 1 else "No Cardiovascular Disease"
         response = {
             "prediction": result,
-            "probability": round(probability, 2)  # Ensure Python float type
+            "probability": round(probability, 2),
+            "risk_level": risk_level
         }
-
+        
         print(f"Prediction: {result} (Probability: {probability:.2f})")  # Output to terminal
         return jsonify(response)
-
+    
     except Exception as e:
         return jsonify({"error": str(e)}), 400  # Return error with status code 400
+    
+
 
 # Newsletter Signup Route
 @app.route('/newsletter/subscribe', methods=['POST'])
@@ -127,9 +133,7 @@ def send_weekly_newsletter(emails):
         mail.send(msg)
 
 # Example Usage (You'll need to schedule this - see below)
-# send_weekly_newsletter(['user1@example.com', 'user2@example.com'])
-
-
+# send_weekly_newsletter(['user1@example.com', 'user2@example.com'])          
 
 if __name__ == '__main__':
     app.run(debug=True)
