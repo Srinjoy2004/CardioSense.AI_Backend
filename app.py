@@ -136,4 +136,4 @@ def send_weekly_newsletter(emails):
 # send_weekly_newsletter(['user1@example.com', 'user2@example.com'])          
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
