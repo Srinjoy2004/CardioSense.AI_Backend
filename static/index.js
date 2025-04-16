@@ -47,7 +47,7 @@ bmiInput.addEventListener("click", function () {
 // Function to call Flask API for ML prediction
 async function fetchPrediction(inputData) {
   try {
-    let response = await fetch("http://127.0.0.1:5000/predict", {
+    let response = await fetch("/predict", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
