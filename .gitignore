@@ -2,3 +2,4 @@
 xgb_heart_disease_model_2.pkl
 .dist
 .env
+xgboost2.0_model.pkl

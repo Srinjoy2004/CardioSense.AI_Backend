@@ -142,7 +142,7 @@
               </div>
               <div class="form-row">
                 <div class="form-group">
-                  <label for="age">Age(in days)</label>
+                  <label for="age">Age(in Years)</label>
                   <input
                     type="number"
                     id="age"
@@ -170,9 +170,19 @@
                     placeholder="Enter your weight"
                   />
                 </div>
+
+                <div class="form-group">
+                  <label for="bmi">BMI</label>
+                  <input
+                    type="number"
+                    id="bmi"
+                    class="form-control"
+                    placeholder="Your BMI"
+                  />
+                </div>
   
                 <div class="form-group">
-                  <label for="sex">Sex</label>
+                  <label for="sex">Gender</label>
                   <select id="sex" class="form-control">
                     <option value="">Select</option>
                     <option value="1">Male</option>
@@ -180,66 +190,46 @@
                   </select>
                 </div>
               </div>
-              <div class="form-group">
-                <label for="ap_hi">Systolic Blood Pressure (ap_hi)</label>
-                <input
-                  type="number"
-                  step="0.1"
-                  id="ap_hi"
-                  class="form-control"
-                  placeholder="Enter your Systolic Blood Pressure (ap_hi)"
-                />
-              </div>
+              
   
-              <div class="form-group">
-                <label for="ap_lo">Diastolic Blood Pressure (ap_lo)</label>
-                <input
-                  type="number"
-                  step="0.1"
-                  id="ap_lo"
-                  class="form-control"
-                  placeholder="Enter your Diastolic Blood Pressure (ap_lo)"
-                />
-              </div>
+              
   
               <div class="form-group">
                 <label for="ch"
-                  >Cholesterol(1: Normal, 2: Above Normal, 3: Well Above
-                  Normal)</label
+                  >Cholesterol(0: Normal, 1: Borderline, 2: High
+                  )</label
                 >
                 <select id="ch" class="form-control">
-                  <option value="1">Normal</option>
-                  <option value="2">Above Normal</option>
-                  <option value="3">Well Above</option>
+                  <option value="2">High</option>
+                  <option value="1">Borderline</option>
+                  <option value="0">Normal</option>
                 </select>
               </div>
   
-              <div class="form-group">
-                <label for="gl"
-                  >Glucose(1: Normal, 2: Above Normal, 3: Well Above
-                  Normal)</label
-                >
-                <select id="gl" class="form-control">
-                  <option value="1">Normal</option>
-                  <option value="2">Above Normal</option>
-                  <option value="3">Well Above</option>
-                </select>
-              </div>
+              
   
               <div class="form-row">
                 <div class="form-group">
                   <label for="smoking">Do you smoke?</label>
                   <select id="smoking" class="form-control">
-                    <option value="">Select</option>
-                    <option value="1">Yes</option>
+                    <option value="2">Regular</option>
+                    <option value="1">Occasionally</option>
                     <option value="0">No</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="sleep">Your Sleep Cycle?</label>
+                  <select id="sleep" class="form-control">
+                    <option value="2">Good</option>
+                    <option value="1">Average</option>
+                    <option value="0">Poor</option>
                   </select>
                 </div>
                 <div class="form-group">
                   <label for="alcohol">Do you drink alcohol?</label>
                   <select id="alcohol" class="form-control">
-                    <option value="">Select</option>
-                    <option value="1">Yes</option>
+                    <option value="2">Regular</option>
+                    <option value="1">Occasionally</option>
                     <option value="0">No</option>
                   </select>
                 </div>
@@ -249,6 +239,33 @@
                 <div class="form-group">
                   <label for="physical">Physical activity in past 30 days?</label>
                   <select id="physical" class="form-control">
+                    <option value="2">High</option>
+                    <option value="1">Medium</option>
+                    <option value="0">Low</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="hypertension">Hypertension</label>
+                  <select id="hypertension" class="form-control">
+                    <option value="">Select</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="diabetes">Diabetes level</label>
+                  <select id="diabetes" class="form-control">
+                    <option value="">Select</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="family">Family History</label>
+                  <select id="family" class="form-control">
                     <option value="">Select</option>
                     <option value="1">Yes</option>
                     <option value="0">No</option>
@@ -264,7 +281,7 @@
                 <button class="btn" id="clear-btn">
                   <i class="fas fa-sync-alt"></i>
                   Clear
-              </button>
+              </button>              
               </div>
             </div>
             <div class="prediction-results">
@@ -291,6 +308,7 @@
                         <i class="fas fa-file-download"></i>
                         Download PDF Report
                       </button>
+                      <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
                     </div>
                   </div>
                 </div>
@@ -300,26 +318,29 @@
         </div>
         <script>
           document.getElementById("clear-btn").addEventListener("click", function() {
-             
-              document.getElementById("age").value = "";
-              document.getElementById("height").value = "";
-              document.getElementById("weight").value = "";
-              document.getElementById("sex").value = "";
-              document.getElementById("ap_hi").value = "";
-              document.getElementById("ap_lo").value = "";
-              document.getElementById("ch").value = "1"; 
-              document.getElementById("gl").value = "1"; 
-              document.getElementById("smoking").value = "";
-              document.getElementById("alcohol").value = "";
-              document.getElementById("physical").value = "";
-  
-              
-              document.getElementById("risk-percentage").innerText = "0%";
-              document.getElementById("risk-level").innerText = "Low Risk";
-              document.getElementById("risk-message").innerText = "Please fill out the form to get your heart disease risk prediction.";
-              document.getElementById("download-btn").disabled = true;
-          });
-      </script>
+            // Clear all form input fields
+            document.getElementById("age").value = "";
+            document.getElementById("height").value = "";
+            document.getElementById("weight").value = "";
+            document.getElementById("bmi").value = "";
+            document.getElementById("sex").value = "";
+            document.getElementById("ch").value = "1"; // Default to borderline
+            document.getElementById("smoking").value = "0"; // Default to No
+            document.getElementById("sleep").value = "1"; // Default to Average
+            document.getElementById("alcohol").value = "0"; // Default to No
+            document.getElementById("physical").value = "1"; // Default to Medium
+            document.getElementById("hypertension").value = "";
+            document.getElementById("diabetes").value = "";
+            document.getElementById("family").value = "";
+          
+            // Reset prediction results
+            document.getElementById("risk-percentage").innerText = "0%";
+            document.getElementById("risk-level").innerText = "Low Risk";
+            document.getElementById("risk-message").innerText = "Please fill out the form to get your heart disease risk prediction.";
+            document.getElementById("download-btn").disabled = true;
+          }); // <-- Added closing brace and parenthesis
+        </script>
+
       </section>
 
     <!-- CHATBOT SECTION -->
@@ -418,16 +439,16 @@
                     </div>
                     <div class="testimonial-card">
                         <div class="testimonial-content">
-                            <p>I've been using the PDF reports to share with my doctor. It has made our consultations much more productive as we can focus on specific risk factors.</p>
+                            <p>CardioSense.AI is an innovative tool that enhances early heart disease detection, offering accurate risk assessment and promoting proactive healthcare interventions</p>
                         </div>
                         <div class="testimonial-author">
-                            <div class="author-avatar">RJ</div>
+                            <div class="author-avatar">MD</div>
                             <div class="author-info">
-                                <h4>Robert Johnson</h4>
-                                <small>Retired, 65</small>
+                                <h4>Dr. Nunudin Datta</h4>
+                                <small>Doctor(BHMS)</small>
                             </div>
                         </div>
-                    </div>
+                    </div>   
                 </div>
                 <div class="testimonial-controls">
                     <div class="testimonial-dot active"></div>
@@ -512,7 +533,7 @@
                   <h3> Our Newsletter</h3>
                   <p>Subscribe to our newsletter to receive the latest updates on heart health and our AI technology.</p>
                   <div class="newsletter-form">
-                      <input type="email" id="email-input" name="newsletter-email" placeholder="Your email address">
+                      <input type="email" id="email-input" placeholder="Your email address">
                       <button onclick="validateEmail()">Subscribe</button>
                   </div>
                 </div>
@@ -534,31 +555,10 @@
           } else if (!emailPattern.test(email)) {
               alert("Please enter a valid email address.");
           } else {
-              
-                // Send POST request to backend
-                fetch('/newsletter/subscribe', {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({ email: email })
-                })
-                .then(response => response.json())
-                .then(data => {
-                  if (data.message) {
-                      alert(data.message); // Show success message
-                      emailInput.value = "";
-                  } else if (data.error) {
-                      alert("Subscription failed: " + data.error);
-                  }
-                })
-                .catch(error => {
-                  console.error('Error:', error);
-                  alert("An error occurred while subscribing.");
-                });
+              alert("Thank you for subscribing! You will receive our latest updates.");
+              emailInput.value = ""; // Clear input after successful subscription
           }
-        }
-              
+      }
   </script>
 
 
